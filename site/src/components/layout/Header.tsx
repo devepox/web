@@ -23,13 +23,16 @@ const company = [
  * Black by default, light over Paper bands (.soft / .paper). The header carries data-theme, so tokens do the rest.
  */
 export function Header() {
+  // React Compiler used to skip this component (it reads refs during render); compiled, it re-renders with a different hook order and crashes on scroll.
+  'use no memo';
   const pathname = usePathname();
   const [panel, setPanel] = useState<Panel>(null);
   const [svc, setSvc] = useState(0); // service previewed in the mega-menu
   const [sheet, setSheet] = useState(false);
   const [sheetTone, setSheetTone] = useState(false); // lags the close by half the 900 ms sweep so the logo flips as the panel leaves
-  if (sheet && !sheetTone) setSheetTone(true);
-  useEffect(() => { if (sheet) return; const t = window.setTimeout(() => setSheetTone(false), 450); return () => window.clearTimeout(t); }, [sheet]);
+  // Not a render-phase setState: with React Compiler that pattern crashes (React error #311) on the first re-render.
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  useEffect(() => { if (sheet) { setSheetTone(true); return; } const t = window.setTimeout(() => setSheetTone(false), 450); return () => window.clearTimeout(t); }, [sheet]);
   const [stuck, setStuck] = useState(false);
   const [hidden, setHidden] = useState(false);
   const [tone, setTone] = useState<'light' | 'dark'>('dark');
@@ -45,9 +48,9 @@ export function Header() {
   const closeTimer = useRef<number>(0);
   const lastY = useRef(0);
 
-  // close menus on navigation (state reset while rendering, not in an effect)
-  const [seenPath, setSeenPath] = useState(pathname);
-  if (seenPath !== pathname) { setSeenPath(pathname); setPanel(null); setSheet(false); }
+  // close menus on navigation
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  useEffect(() => { setPanel(null); setSheet(false); }, [pathname]);
 
   // stuck / hide on scroll / tone from the section under the header
   useEffect(() => {
