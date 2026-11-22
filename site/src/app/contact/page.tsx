@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react';
 import type { Metadata } from 'next';
+import { share } from '@/lib/og';
 import { Label, Val } from '@/components/ui/primitives';
 import { ContactForm } from '@/components/sections/ContactForm';
 import { nextSteps } from '@/components/sections/ContactBlock';
@@ -8,9 +9,11 @@ import { RiseText } from '@/components/motion/RiseText';
 import { company } from '@/lib/content';
 import { FoilBars } from '@/components/brand/FoilBars';
 
+const DESCRIPTION = 'Tell epox the problem and we will tell you how we would fix it. A person reads every message and replies within one working day.';
 export const metadata: Metadata = {
   title: 'Contact',
-  description: 'Tell epox the problem and we will tell you how we would fix it. A person reads every message and replies within one working day.',
+  description: DESCRIPTION,
+  ...share('contact', 'Contact · epox', DESCRIPTION, '/contact'),
 };
 
 const isPh = (v: string) => v.startsWith('[PLACEHOLDER');
@@ -20,9 +23,9 @@ const d = (ms: number) => ({ '--d': `${ms}ms` }) as CSSProperties;
 export default function ContactPage() {
   return (
     <section aria-labelledby="contact-hero" className="hero pb-[var(--section-y)]">
-      <FoilBars className="hero-bars hero-bars--page" />
+      <FoilBars variant="short" className="hero-bars hero-bars--page" />
       <div className="container-x pt-[calc(72px+var(--space-10))]">
-        <p className="t-label muted hero-after" style={d(0)}>/ Contact</p>
+        <p className="t-label muted hero-after" style={d(0)}>Contact</p>
         <RiseText as="h1" on="load" id="contact-hero" className="t-h1 mt-8" style={{ maxWidth: '15ch' }}
           parts={["Tell us the problem. We'll tell you how we'd", { t: 'fix it.', hl: true }]} />
 
@@ -45,11 +48,13 @@ export default function ContactPage() {
             </ol>
 
             <dl className="mt-12 grid gap-5">
-              <div><dt className="t-label muted">Prefer a call?</dt>
-                <dd className="mt-1.5">{company.bookingUrl ? <a className="link" href={company.bookingUrl}>Book 20 minutes</a> : <Val v="[PLACEHOLDER: booking link]" />}</dd></div>
+              <div><dt className="t-label muted">Call or WhatsApp</dt>
+                <dd className="mt-1.5 flex flex-wrap gap-x-4 gap-y-1"><a className="link t-num" href={company.phoneHref}>{company.phone}</a><a className="link" href={company.whatsappHref}>Message on WhatsApp</a></dd></div>
               <div><dt className="t-label muted">Email</dt><dd className="mt-1.5">{isPh(company.email) ? <Val v={company.email} /> : <a className="link" href={`mailto:${company.email}`}>{company.email}</a>}</dd></div>
-              <div><dt className="t-label muted">WhatsApp</dt><dd className="mt-1.5">{isPh(company.whatsapp) ? <Val v={company.whatsapp} /> : <a className="link" href={`https://wa.me/${company.whatsapp.replace(/\D/g, '')}`}>{company.whatsapp}</a>}</dd></div>
-              <div><dt className="t-label muted">Where</dt><dd className="mt-1.5">{company.city}, {company.country} · {company.timezone}</dd></div>
+              <div><dt className="t-label muted">Book a call</dt>
+                <dd className="mt-1.5">{company.bookingUrl ? <a className="link" href={company.bookingUrl}>Book 20 minutes</a> : <Val v="[PLACEHOLDER: booking link]" />}</dd></div>
+              <div><dt className="t-label muted">Where</dt>
+                <dd className="mt-1.5"><a className="link" href={company.mapsUrl} target="_blank" rel="noopener noreferrer">{company.street}, {company.city}</a><span className="muted"> · {company.country} · {company.timezone}</span></dd></div>
             </dl>
           </div>
         </div>

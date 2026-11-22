@@ -16,7 +16,7 @@ const sections: { h: string; body: React.ReactNode }[] = [
   { h: 'Who handles it', body: <>The form is delivered to our inbox by Resend, an email service. The site is hosted on Vercel, which keeps short-lived technical logs (such as IP addresses) to run and protect the site. Both act on our behalf.</> },
   { h: 'How long we keep it', body: <>For as long as we&apos;re talking about a project with you, then <Ph>[PLACEHOLDER: retention period, e.g. 24 months]</Ph>, unless you ask us to delete it sooner.</> },
   { h: 'Your choices', body: <>You can ask what we hold about you, ask us to correct it, or ask us to delete it. Write to <Val v={company.email} /> and we&apos;ll answer within <Ph>[PLACEHOLDER: e.g. 30 days]</Ph>.</> },
-  { h: 'Who we are', body: <>epox, {company.city}, {company.country}. <Ph>[PLACEHOLDER: registered business name and address, if any]</Ph></> },
+  { h: 'Who we are', body: <>epox, {company.address}. Phone and WhatsApp {company.phone}. <Ph>[PLACEHOLDER: registered business name, if any]</Ph></> },
 ];
 
 /** /privacy (design brief §6): plain text page. DRAFT until reviewed. */
@@ -24,7 +24,7 @@ export default function PrivacyPage() {
   return (
     <section aria-labelledby="privacy-title" className="paper pb-[var(--section-y)]">
       <div className="container-x pt-[calc(72px+var(--space-10))]">
-        <p className="t-label muted">/ Privacy</p>
+        <p className="t-label muted">Privacy</p>
         <h1 id="privacy-title" className="t-h1 mt-8" style={{ maxWidth: '14ch' }}>What happens to what you send us</h1>
         <p className="mt-8"><Ph>[PLACEHOLDER: draft, to be reviewed by the owner / a lawyer before launch]</Ph> <span className="t-small muted">Last updated <Ph>[PLACEHOLDER: date]</Ph></span></p>
 

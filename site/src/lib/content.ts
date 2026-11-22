@@ -7,7 +7,14 @@ export const company = {
   founded: 2019,
   timezone: 'UTC+5',
   email: 'info@epox.systems',
-  whatsapp: '[PLACEHOLDER: WhatsApp]',
+  /** one number for calls and WhatsApp (owner, 2026-11-22): local 0308 2982001 */
+  phone: '+92 308 2982001',
+  phoneHref: 'tel:+923082982001',
+  whatsappHref: 'https://wa.me/923082982001',
+  /** street address (owner, 2026-11-22) */
+  street: 'St#6, Zia Town, Canal Road',
+  address: 'St#6, Zia Town, Canal Road, Faisalabad, Pakistan',
+  mapsUrl: 'https://www.google.com/maps/search/?api=1&query=St%236%2C%20Zia%20Town%2C%20Canal%20Road%2C%20Faisalabad',
   bookingUrl: '', // [PLACEHOLDER: booking link]
 };
 
@@ -71,6 +78,23 @@ export const cases: CaseStudy[] = [
     summary: 'People log meals and track their nutrition, then talk directly to a real nutrition doctor inside the app, not a generic diet bot.',
     sector: 'Health & nutrition', client: '[PLACEHOLDER: client descriptor]', platforms: 'iOS · Android · Web',
     engagement: 'Build, marketing, maintenance', status: 'Live', duration: '[PLACEHOLDER: duration]', asset: 'case 002 hero · 16:10',
+  },
+];
+
+/** Home "What we found": the problem each build started from (copy from the case stories). Results wait for the owner's numbers. */
+export const findings = [
+  {
+    slug: 'rental-inspection-app', n: '001', sector: 'PropTech · Europe',
+    // \u2011 = non-breaking hyphen, so "move-in" never splits across lines
+    found: "Tenants and landlords didn't trust a move\u2011in record the other side could have changed.",
+    built: 'A sealed photo record, made room by room at move\u2011in and compared side by side at move\u2011out.',
+    result: '[PLACEHOLDER: before → after, e.g. deposit disputes per 100 move\u2011outs]',
+  },
+  {
+    slug: 'nutrition-coaching-app', n: '002', sector: 'Health & nutrition',
+    found: 'People logging meals had nobody to ask what the numbers meant, so most stopped within weeks.',
+    built: 'A real nutritionist inside the app, in the same place people track what they eat.',
+    result: '[PLACEHOLDER: before → after, e.g. people still logging after 30 days]',
   },
 ];
 

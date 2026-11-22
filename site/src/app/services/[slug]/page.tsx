@@ -1,5 +1,6 @@
 import type { CSSProperties, ReactNode } from 'react';
 import type { Metadata } from 'next';
+import { share } from '@/lib/og';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLink, AssetPlaceholder, Button, Label, Ph, SectionHeader, Tags } from '@/components/ui/primitives';
@@ -21,7 +22,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const s = services.find(x => x.slug === slug); const d = serviceDetails[slug];
   if (!s || !d) return {};
-  return { title: s.title, description: d.lead };
+  return { title: s.title, description: d.lead, ...share(`services-${slug}`, `${s.title} · epox`, d.lead, `/services/${slug}`) };
 }
 
 const d = (ms: number) => ({ '--d': `${ms}ms` }) as CSSProperties;
@@ -45,10 +46,10 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
     <>
       {/* hero */}
       <section className="hero" aria-labelledby="service-title">
-        <FoilBars className="hero-bars hero-bars--page" />
+        <FoilBars variant="short" className="hero-bars hero-bars--page" />
         <div className="container-x pt-[calc(72px+var(--space-10))] pb-[var(--space-9)]">
           <p className="t-label muted hero-after" style={d(0)}>
-            <Link href="/services" className="link-quiet">/ Services</Link> · {s.title}
+            <Link href="/services" className="link-quiet">Services</Link> · {s.title}
           </p>
           <RiseText as="h1" on="load" id="service-title" className="t-h1 mt-8" style={{ maxWidth: '16ch' }} parts={[detail.headline]} />
           <div className="mt-10 grid gap-10 lg:grid-cols-12 lg:items-end">
@@ -61,7 +62,7 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
       </section>
 
       {/* what we build */}
-      <section className="section soft" aria-labelledby="build-title">
+      <section className="section" aria-labelledby="build-title">
         <div className="container-x">
           <SectionHeader id="build-title" label="What we build" title={detail.buildTitle} />
           <ol className="grid gap-x-[var(--gutter)] gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
@@ -98,7 +99,7 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
 
       {/* related work */}
       {related.length > 0 && (
-        <section className="section soft" aria-labelledby="work-title">
+        <section className="section" aria-labelledby="work-title">
           <div className="container-x">
             <SectionHeader id="work-title" label="Work" title={related.length > 1 ? 'Both apps are still live' : 'Still live, still run by us'} action={<ArrowLink href="/work">All work</ArrowLink>} />
             <div className="grid gap-[var(--gutter)]">{related.map(c => <CaseCard key={c.slug} c={c} />)}</div>
@@ -109,7 +110,7 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
       {/* tech (only when there's a list or a note to confirm) */}
       {(detail.tech.length > 0 || detail.techNote) && <section className="section-tight" aria-labelledby="tech-title">
         <div className="container-x grid gap-6 lg:grid-cols-12 lg:gap-[var(--gutter)]">
-          <h2 id="tech-title" className="t-label muted lg:col-span-3 lg:pt-1.5">/ Tech we use</h2>
+          <h2 id="tech-title" className="t-label muted lg:col-span-3 lg:pt-1.5">Tech we use</h2>
           <div className="grid gap-4 lg:col-span-9">
             {detail.tech.length > 0 && <Tags items={detail.tech} />}
             {detail.techNote && <p><Ph>{detail.techNote}</Ph></p>}
@@ -120,7 +121,7 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
       {/* FAQ (L6) */}
       <section className="section" aria-labelledby="faq-title">
         <div className="container-x">
-          <SectionHeader id="faq-title" label="FAQ" title="Questions we hear first" />
+          <SectionHeader id="faq-title" layout="split" label="FAQ" title="Questions we hear first" intro="Something not covered here? Ask, and a person who builds software will answer." action={<ArrowLink href="#contact">Ask a question</ArrowLink>} />
           <Faq items={detail.faq.map(f => ({ q: f.q, a: <WithPh text={f.a} /> }))} />
         </div>
       </section>

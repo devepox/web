@@ -1,4 +1,4 @@
-import { LOCKUP_VIEWBOX, TAGLINE_PATH, WORDMARK_PATH, WORDMARK_VIEWBOX } from './wordmark-path';
+import { LOCKUP_VIEWBOX, MONOGRAM_PATH, MONOGRAM_VIEWBOX, TAGLINE_PATH, WORDMARK_PATH, WORDMARK_VIEWBOX } from './wordmark-path';
 
 /**
  * epox wordmark (Ice Mint): Space Grotesk Bold, outlined from the brand files. Always lower case.
@@ -14,6 +14,19 @@ export function Logo({ className = '', title = 'epox', foil = false, lockup = fa
       <path d={WORDMARK_PATH} fill={foil ? 'url(#ep-foil)' : 'currentColor'} />
       {foil && <path d={WORDMARK_PATH} fill="url(#ep-grain-word)" />}
       {lockup && <path d={TAGLINE_PATH} fill={foil ? '#D8DDE5' : 'currentColor'} />}
+    </svg>
+  );
+}
+
+/**
+ * The lower-case "e" monogram on its own (brand: app icon, favicon, avatar, watermark, stamp).
+ * foil on Black only; otherwise currentColor. Decorative by default (aria-hidden) since it sits next to the name.
+ */
+export function Monogram({ className = '', foil = false }: { className?: string; foil?: boolean }) {
+  return (
+    <svg viewBox={MONOGRAM_VIEWBOX} className={className} aria-hidden focusable="false">
+      <path d={MONOGRAM_PATH} fill={foil ? 'url(#ep-foil)' : 'currentColor'} />
+      {foil && <path d={MONOGRAM_PATH} fill="url(#ep-grain-word)" />}
     </svg>
   );
 }

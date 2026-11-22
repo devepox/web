@@ -1,5 +1,4 @@
 import { ContactForm } from './ContactForm';
-import { Val } from '@/components/ui/primitives';
 import { company } from '@/lib/content';
 import { RiseText } from '@/components/motion/RiseText';
 
@@ -16,7 +15,7 @@ export function ContactBlock() {
       <div className="container-x">
         <div className="grid gap-16 lg:grid-cols-12 lg:gap-[var(--gutter)]">
           <div className="lg:col-span-5">
-            <p className="t-label muted">/ Contact</p>
+            <p className="t-label muted">Contact</p>
             <RiseText as="h2" id="contact-title" className="t-h1 mt-6" style={{ maxWidth: '12ch' }} parts={['Have a problem worth solving?', { t: "Let's talk.", emph: true }]} />
             <ol className="mt-12 grid gap-6">
               {nextSteps.map(s => (
@@ -27,7 +26,8 @@ export function ContactBlock() {
               ))}
             </ol>
             <p className="mt-10 t-small muted">
-              Prefer a call? {company.bookingUrl ? <a className="link" href={company.bookingUrl}>Book 20 minutes</a> : <Val v="[PLACEHOLDER: booking link]" />}
+              Prefer a call? <a className="link t-num text-text" href={company.phoneHref}>{company.phone}</a>, also on <a className="link text-text" href={company.whatsappHref}>WhatsApp</a>.
+              {company.bookingUrl && <> Or <a className="link text-text" href={company.bookingUrl}>book 20 minutes</a>.</>}
             </p>
           </div>
           <div className="lg:col-span-6 lg:col-start-7">

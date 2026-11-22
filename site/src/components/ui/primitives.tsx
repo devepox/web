@@ -72,17 +72,33 @@ export function ServiceIcon({ slug }: { slug: string }) {
 }
 
 /* ------------------------------------------------------------------ Section header */
-export function SectionHeader({ label, title, action, id, as: As = 'h2' }:
-  { label: string; title: ReactNode; action?: ReactNode; id?: string; as?: 'h1' | 'h2' }) {
+/**
+ * Two layouts, so consecutive sections don't all read the same:
+ *  · stack (default): label, then the title with the optional action on its right.
+ *  · split: label + title on the left (7 cols), a one-line intro and the action on the right (5 cols), bottom-aligned.
+ */
+export function SectionHeader({ label, title, action, id, intro, layout = 'stack', as: As = 'h2' }:
+  { label: string; title: ReactNode; action?: ReactNode; id?: string; intro?: ReactNode; layout?: 'stack' | 'split'; as?: 'h1' | 'h2' }) {
+  const cls = As === 'h1' ? 't-h1' : 't-h2';
+  const heading = typeof title === 'string'
+    ? <RiseText parts={[title]} as={As} id={id} className={cls} style={{ maxWidth: '18ch' }} />
+    : <As id={id} className={cls} style={{ maxWidth: '18ch' }}>{title}</As>;
+  if (layout === 'split') return (
+    <header className="sh sh--split">
+      <div><Label className="kicker">{label}</Label><div className="mt-5">{heading}</div></div>
+      {(intro || action) && (
+        <div className="sh-aside">
+          {intro && <p className="muted" style={{ maxWidth: '40ch' }}>{intro}</p>}
+          {action && <div className={intro ? 'mt-5' : ''}>{action}</div>}
+        </div>
+      )}
+    </header>
+  );
   return (
     <header className="sh">
-      <Label className="kicker">/ {label}</Label>
-      <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-        {typeof title === 'string'
-          ? <RiseText parts={[title]} as={As} id={id} className={As === 'h1' ? 't-h1' : 't-h2'} style={{ maxWidth: '18ch' }} />
-          : <As id={id} className={As === 'h1' ? 't-h1' : 't-h2'} style={{ maxWidth: '18ch' }}>{title}</As>}
-        {action}
-      </div>
+      <Label className="kicker">{label}</Label>
+      <div className="sh-row">{heading}{action}</div>
+      {intro && <p className="muted" style={{ maxWidth: '52ch' }}>{intro}</p>}
     </header>
   );
 }

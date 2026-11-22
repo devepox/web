@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react';
 import type { Metadata } from 'next';
+import { share } from '@/lib/og';
 import { ArrowLink, Label, Ph, SectionHeader } from '@/components/ui/primitives';
 import { StatementReveal, StatsScoreboard } from '@/components/sections/interactive';
 import { LocalClock } from '@/components/sections/LocalClock';
@@ -8,9 +9,11 @@ import { RiseText } from '@/components/motion/RiseText';
 import { company, stats } from '@/lib/content';
 import { FoilBars } from '@/components/brand/FoilBars';
 
+const DESCRIPTION = 'epox is a software house in Faisalabad, Pakistan, building since 2019. We find what is holding a business back, reach out with the fix, build it and stay to keep it running.';
 export const metadata: Metadata = {
   title: 'About',
-  description: 'epox is a software house in Faisalabad, Pakistan, building since 2019. We find what is holding a business back, reach out with the fix, build it and stay to keep it running.',
+  description: DESCRIPTION,
+  ...share('about', 'About · epox', DESCRIPTION, '/about'),
 };
 
 const d = (ms: number) => ({ '--d': `${ms}ms` }) as CSSProperties;
@@ -27,9 +30,9 @@ export default function AboutPage() {
   return (
     <>
       <section className="hero" aria-labelledby="about-hero">
-        <FoilBars className="hero-bars hero-bars--page" />
+        <FoilBars variant="short" className="hero-bars hero-bars--page" />
         <div className="container-x pt-[calc(72px+var(--space-10))] pb-[var(--space-9)]">
-          <p className="t-label muted hero-after" style={d(0)}>/ About</p>
+          <p className="t-label muted hero-after" style={d(0)}>About</p>
           <RiseText as="h1" on="load" id="about-hero" className="t-h1 mt-8" style={{ maxWidth: '16ch' }}
             parts={[`A software house from ${company.city}, building`, { t: `since ${company.founded}.`, hl: true }]} />
           <p className="t-lead muted mt-10 hero-after" style={{ maxWidth: '46ch', ...d(600) }}>
@@ -41,7 +44,7 @@ export default function AboutPage() {
       {/* statement (H6) */}
       <section className="section soft" aria-label="Why you're here">
         <div className="container-x">
-          <Label>/ If we messaged you</Label>
+          <Label>If we messaged you</Label>
           <div className="mt-10">
             <StatementReveal text="If you're reading this because we reached out, it's because we already looked at your product and found something worth fixing. This page is here so you can check who we are." />
           </div>
@@ -83,6 +86,10 @@ export default function AboutPage() {
               <p className="t-lead" style={{ maxWidth: '40ch' }}>
                 We work with clients wherever they are. One of the two apps in our work runs for tenants and landlords across Europe.
               </p>
+              <address className="mt-8 not-italic muted">
+                <a className="link text-text" href={company.mapsUrl} target="_blank" rel="noopener noreferrer">{company.street}, {company.city}</a>
+                <span className="block mt-1">Call or WhatsApp <a className="link t-num text-text" href={company.phoneHref}>{company.phone}</a></span>
+              </address>
               <div className="mt-8"><ArrowLink href="/how-we-work">How we work together</ArrowLink></div>
             </div>
           </div>

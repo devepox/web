@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react';
 import type { Metadata } from 'next';
+import { share } from '@/lib/og';
 import { ArrowLink, Label, Ph, SectionHeader } from '@/components/ui/primitives';
 import { Faq, ProcessSteps } from '@/components/sections/blocks';
 import { LocalClock } from '@/components/sections/LocalClock';
@@ -8,9 +9,11 @@ import { RiseText } from '@/components/motion/RiseText';
 import { communication, modelCompare, models } from '@/lib/content';
 import { FoilBars } from '@/components/brand/FoilBars';
 
+const DESCRIPTION = 'Three ways to work with epox (fixed project, dedicated developers, monthly retainer), the four steps every project goes through, and how we keep you updated from Faisalabad, UTC+5.';
 export const metadata: Metadata = {
   title: 'How we work',
-  description: 'Three ways to work with epox (fixed project, dedicated developers, monthly retainer), the four steps every project goes through, and how we keep you updated from Faisalabad, UTC+5.',
+  description: DESCRIPTION,
+  ...share('how-we-work', 'How we work · epox', DESCRIPTION, '/how-we-work'),
 };
 
 const d = (ms: number) => ({ '--d': `${ms}ms` }) as CSSProperties;
@@ -28,9 +31,9 @@ export default function HowWeWorkPage() {
   return (
     <>
       <section className="hero" aria-labelledby="hww-hero">
-        <FoilBars className="hero-bars hero-bars--page" />
+        <FoilBars variant="short" className="hero-bars hero-bars--page" />
         <div className="container-x pt-[calc(72px+var(--space-10))] pb-[var(--space-9)]">
-          <p className="t-label muted hero-after" style={d(0)}>/ How we work</p>
+          <p className="t-label muted hero-after" style={d(0)}>How we work</p>
           <RiseText as="h1" on="load" id="hww-hero" className="t-h1 mt-8" style={{ maxWidth: '15ch' }}
             parts={['Pick how we work together. Then see', { t: 'every week', hl: true }, 'of it.']} />
           <p className="t-lead muted mt-10 hero-after" style={{ maxWidth: '46ch', ...d(600) }}>
@@ -40,7 +43,7 @@ export default function HowWeWorkPage() {
       </section>
 
       {/* ways to work: comparison (table on desktop, cards on mobile) */}
-      <section className="section soft" aria-labelledby="models-title">
+      <section className="section" aria-labelledby="models-title">
         <div className="container-x">
           <SectionHeader id="models-title" label="Ways to work" title="Three ways to work with us" />
 
@@ -52,8 +55,7 @@ export default function HowWeWorkPage() {
                   <th scope="col" className="w-[18%]"><span className="sr-only">Compare</span></th>
                   {models.map(m => (
                     <th key={m.n} scope="col" className="rounded-t-[var(--r-card)] bg-card px-8 pt-8 pb-6 text-left align-top font-normal">
-                      <span className="t-label muted block">M/{m.n}</span>
-                      <span className="t-h3 mt-5 block">{m.title}</span>
+                                            <span className="t-h3 block">{m.title}</span>
                     </th>
                   ))}
                 </tr>
@@ -78,8 +80,7 @@ export default function HowWeWorkPage() {
           <ol className="grid gap-[var(--gutter)] md:grid-cols-2 lg:hidden">
             {models.map((m, i) => (
               <li key={m.n} className="card-o rounded-[var(--r-card)] p-8" data-reveal style={{ '--i': i } as CSSProperties}>
-                <span className="t-label muted">M/{m.n}</span>
-                <h3 className="t-h3 mt-5">{m.title}</h3>
+                                <h3 className="t-h3">{m.title}</h3>
                 <dl className="mt-6 grid gap-5">
                   {modelCompare.rows.map(row => (
                     <div key={row} className="border-t border-line pt-4"><dt className="t-label muted">{row}</dt><dd className="mt-2 t-small">{cell(i, row)}</dd></div>
@@ -129,7 +130,7 @@ export default function HowWeWorkPage() {
       {/* FAQ */}
       <section className="section" aria-labelledby="faq-title">
         <div className="container-x">
-          <SectionHeader id="faq-title" label="FAQ" title="Questions we hear first" />
+          <SectionHeader id="faq-title" layout="split" label="FAQ" title="Questions we hear first" intro="Something not covered here? Ask, and a person who builds software will answer." action={<ArrowLink href="#contact">Ask a question</ArrowLink>} />
           <Faq items={[
             { q: 'Do you work under NDA?', a: 'Yes. We can sign yours or send ours before you share anything.' },
             { q: 'Who owns the code?', a: <>You do. <Ph>[PLACEHOLDER: confirm ownership and handover terms]</Ph></> },

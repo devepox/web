@@ -1,15 +1,16 @@
 import type { CSSProperties } from 'react';
 import type { Metadata } from 'next';
+import { share } from '@/lib/og';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import type { MDXProps } from 'mdx/types';
-import { AssetPlaceholder, FactTable, Live, Ph, Val } from '@/components/ui/primitives';
+import { FactTable, Live, Ph, Val } from '@/components/ui/primitives';
+import { CaseCover } from '@/components/sections/CaseCover';
 import { ContactBlock } from '@/components/sections/ContactBlock';
 import { caseMdxComponents } from '@/components/sections/caseMdx';
 import { ExpandOnScroll } from '@/components/motion/ExpandOnScroll';
 import { RiseText } from '@/components/motion/RiseText';
 import { cases } from '@/lib/content';
-import { FoilBars } from '@/components/brand/FoilBars';
 
 // Case stories: one MDX file per project in src/content/work. Facts for cards + fact table stay in lib/content.ts.
 // Adding a project = one entry in `cases` + one MDX file + one line here.
@@ -27,7 +28,7 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const c = cases.find(x => x.slug === slug);
-  return c ? { title: `${c.headline} · Case ${c.n}`, description: c.summary } : {};
+  return c ? { title: `${c.headline} · Case ${c.n}`, description: c.summary, ...share(`work-${slug}`, `${c.headline} · epox`, c.summary, `/work/${slug}`) } : {};
 }
 
 const d = (ms: number) => ({ '--d': `${ms}ms` }) as CSSProperties;
@@ -45,17 +46,17 @@ export default async function CasePage({ params }: { params: Promise<{ slug: str
   return (
     <>
       {/* hero */}
+      {/* no hero bars here: the cover below carries them */}
       <section className="hero" aria-labelledby="case-title">
-        <FoilBars className="hero-bars hero-bars--page" />
         <div className="container-x pt-[calc(72px+var(--space-10))]">
           <p className="t-label muted hero-after flex flex-wrap items-center gap-x-3 gap-y-1" style={d(0)}>
-            <Link href="/work" className="link-quiet">/ Work</Link>
+            <Link href="/work" className="link-quiet">Work</Link>
             <span>Case {c.n}</span>{/* sector, region and status are in the fact table right below */}
           </p>
           <RiseText as="h1" on="load" id="case-title" className="t-h1 mt-8" style={{ maxWidth: '16ch' }} parts={[c.headline]} />
           <p className="t-lead muted mt-10 hero-after" style={{ maxWidth: '48ch', ...d(600) }}>{c.summary}</p>
           <ExpandOnScroll className="mt-[var(--space-9)]">
-            <AssetPlaceholder name={`${c.asset.split(' · ')[0]} · 16:9`} ratio="16 / 9" />
+            <CaseCover c={c} ratio="16 / 9" className="case-cover--hero" />
           </ExpandOnScroll>
         </div>
       </section>
@@ -84,7 +85,7 @@ export default async function CasePage({ params }: { params: Promise<{ slug: str
       {/* tech */}
       <section className="section-tight border-t border-line" aria-labelledby="tech-title">
         <div className="container-x grid gap-6 lg:grid-cols-12 lg:gap-[var(--gutter)]">
-          <h2 id="tech-title" className="t-label muted lg:col-span-4">/ Tech</h2>
+          <h2 id="tech-title" className="t-label muted lg:col-span-4">Tech</h2>
           <p className="lg:col-span-7 lg:col-start-6"><Ph>[PLACEHOLDER: tech stack for this project]</Ph></p>
         </div>
       </section>

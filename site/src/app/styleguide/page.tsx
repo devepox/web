@@ -29,7 +29,7 @@ const TYPE = [
   ['display', 't-display', 'Found it.'], ['h1', 't-h1', 'A nutrition app with a real nutritionist inside'], ['h2', 't-h2', 'You\'ll always know what\'s happening'],
   ['h3', 't-h3', 'Business software'], ['rollcall', 't-rollcall', 'PropTech'], ['lead', 't-lead', 'We design, build and launch software, then stay on to keep it running and growing.'],
   ['body', 't-body', 'Tenants photograph the property at move-in into a tamper-proof record, then both sides compare it side by side at move-out. No more arguments over the deposit.'],
-  ['small', 't-small', 'NDA available on request.'], ['label', 't-label', '/ Services · Case 002 · Since 2019'], ['tagline', 't-tagline', 'software house'],
+  ['small', 't-small', 'NDA available on request.'], ['label', 't-label', 'Services · Case 002 · Since 2019'], ['tagline', 't-tagline', 'software house'],
 ];
 const SPACE = [4, 8, 12, 16, 24, 32, 48, 56, 64, 96, 128, 192];
 const MOTION = [
@@ -71,7 +71,7 @@ export default function Styleguide() {
       <section className="hero">
         <FoilBars className="hero-bars hero-bars--home" />
         <div className="container-x pt-[calc(72px+var(--space-10))] pb-[var(--space-10)]">
-          <p className="t-label muted hero-after" style={{ '--d': '0ms' } as React.CSSProperties}><span className="normal-case">epox</span> · Styleguide · Ice Mint</p>
+          <p className="t-label muted hero-after" style={{ '--d': '0ms' } as React.CSSProperties}>Styleguide · Ice Mint</p>
           <RiseText as="h1" on="load" className="t-display mt-8" style={{ maxWidth: '11ch' }} parts={['We find the problem', { t: 'before', hl: true }, 'you do.']} />
           <p className="t-lead muted mt-10 hero-after" style={{ maxWidth: '44ch', '--d': '650ms' } as React.CSSProperties}>Every token, component and motion effect in one place, themed with the Ice Mint brand system (<code className="t-small">assets/epox — Ice Mint brand system</code>).</p>
           <div className="mt-12 flex flex-wrap gap-3 hero-after" style={{ '--d': '800ms' } as React.CSSProperties}><Button href="#contact" variant="accent" arrow size="lg">Let&apos;s talk</Button><Button href="#cases" variant="secondary" size="lg">See our work</Button></div>
@@ -149,7 +149,7 @@ export default function Styleguide() {
       <Block id="atoms" label="Atoms" title="Labels, tags, status and placeholders" tone="soft">
         <div className="grid gap-12 md:grid-cols-2">
           <div className="grid content-start gap-6">
-            <Label>/ Services</Label>
+            <Label>Services</Label>
             <div className="flex flex-wrap gap-2"><Tag>iOS</Tag><Tag>Android</Tag><Tag>Cross-platform</Tag></div>
             <div className="flex items-center gap-3">{services.slice(0, 4).map(s => <ServiceIcon key={s.slug} slug={s.slug} />)}</div>
             <Live>Live · run by epox</Live>
@@ -199,7 +199,7 @@ export default function Styleguide() {
       </Block>
 
       <section id="statement" className="section">
-        <div className="container-x"><Label>/ Statement</Label><div className="mt-10"><StatementReveal text="Most of our clients didn't come looking for us. We found a problem in their product, showed them the fix, and stayed to keep it working." /></div></div>
+        <div className="container-x"><Label>Statement</Label><div className="mt-10"><StatementReveal text="Most of our clients didn't come looking for us. We found a problem in their product, showed them the fix, and stayed to keep it working." /></div></div>
       </section>
 
       <Block id="faq" label="FAQ" title="Questions we hear first">

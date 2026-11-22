@@ -34,16 +34,17 @@ export function Footer() {
             <p className="t-label muted">Contact</p>
             <ul className="mt-5 grid gap-2">
               <li>{company.email.startsWith('[PLACEHOLDER') ? <Val v={company.email} /> : <a className="link-quiet" href={`mailto:${company.email}`}>{company.email}</a>}</li>
-              <li><Val v={company.whatsapp} /></li>
-              <li className="muted">{company.city}, {company.country} · {company.timezone}</li>
+              <li><a className="link-quiet t-num" href={company.phoneHref}>{company.phone}</a> <span className="muted">· </span><a className="link-quiet" href={company.whatsappHref}>WhatsApp</a></li>
+              <li className="muted">{company.street},<br />{company.city}, {company.country} · {company.timezone}</li>
             </ul>
           </div>
         </div>
 
         <div className="mt-[var(--space-9)] flex border-t border-line pt-8">
-          <div className="flex flex-wrap items-center gap-x-8 gap-y-3 t-label muted">
+          {/* the name is never set in capitals, so the copyright line is plain small text, not a label */}
+          <div className="flex flex-wrap items-center gap-x-8 gap-y-3 t-small muted">
             <Link href="/privacy" className="link-quiet">Privacy</Link>
-            <span>© {year} <span className="normal-case">epox</span></span>{/* labels are capitals; the name never is */}
+            <span>© {year} epox</span>
           </div>
         </div>
       </div>

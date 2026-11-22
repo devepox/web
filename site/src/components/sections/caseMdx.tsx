@@ -12,7 +12,7 @@ export function Chapter({ n, title, children }: { n: string; title: string; chil
   return (
     <section className="section grid gap-8 border-t border-line lg:grid-cols-12 lg:gap-[var(--gutter)]" aria-label={title}>
       <div className="lg:col-span-4">
-        <p className="t-label muted">{n} /</p>
+        <p className="t-label muted t-num">{n}</p>
         <RiseText as="h2" className="t-h2 mt-4" style={{ maxWidth: '12ch' }} parts={[title]} />
       </div>
       <div className="case-body t-lead lg:col-span-7 lg:col-start-6" data-reveal>{children}</div>
