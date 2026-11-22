@@ -13,13 +13,15 @@ export function ExpandOnScroll({ children, className = '' }: { children: React.R
     const el = ref.current;
     if (!el || prefersReducedMotion() || !window.matchMedia('(min-width: 768px)').matches) return;
     let kill = () => {};
+    let cancelled = false;
     loadGsap().then(({ gsap }) => {
+      if (cancelled) return; // unmounted before GSAP finished loading
       const tw = gsap.fromTo(el,
         { clipPath: 'inset(0% 9% 0% 9% round 40px)' },
         { clipPath: 'inset(0% 0% 0% 0% round 16px)', ease: 'none', scrollTrigger: { trigger: el, start: 'top bottom', end: 'center center', scrub: true } });
       kill = () => { tw.scrollTrigger?.kill(); tw.kill(); el.style.clipPath = ''; };
     });
-    return () => kill();
+    return () => { cancelled = true; kill(); };
   }, []);
   return <div ref={ref} className={className}>{children}</div>;
 }

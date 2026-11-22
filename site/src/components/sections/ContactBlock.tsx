@@ -31,7 +31,7 @@ export function ContactBlock() {
             </p>
           </div>
           <div className="lg:col-span-6 lg:col-start-7">
-            <ContactForm />
+            <ContactForm accent={false} />
           </div>
         </div>
       </div>

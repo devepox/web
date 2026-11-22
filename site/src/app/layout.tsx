@@ -31,7 +31,8 @@ const inter = localFont({
 const FONT_SET = process.env.NEXT_PUBLIC_FONT_SET === 'licensed' ? 'licensed' : 'free';
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL
+    ?? (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : 'http://localhost:3000')),
   title: { default: 'epox: software house in Faisalabad', template: '%s · epox' },
   description: 'epox builds web, mobile and AI software, and finds the problem before you do. Building since 2019.',
   openGraph: { siteName: 'epox', type: 'website' },

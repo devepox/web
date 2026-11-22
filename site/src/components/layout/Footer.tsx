@@ -33,7 +33,7 @@ export function Footer() {
           <div className="md:col-span-4">
             <p className="t-label muted">Contact</p>
             <ul className="mt-5 grid gap-2">
-              <li><Val v={company.email} /></li>
+              <li>{company.email.startsWith('[PLACEHOLDER') ? <Val v={company.email} /> : <a className="link-quiet" href={`mailto:${company.email}`}>{company.email}</a>}</li>
               <li><Val v={company.whatsapp} /></li>
               <li className="muted">{company.city}, {company.country} · {company.timezone}</li>
             </ul>

@@ -10,17 +10,18 @@ export function CountUp({ to, raw = false, duration = 1200 }: { to: number; raw?
   useEffect(() => {
     const el = ref.current; if (!el || prefersReducedMotion()) return;
     const from = raw ? Math.max(0, to - 12) : 0;
-    setV(from);
+    setV(from); // hidden by CSS (.count-up) until the count starts, so the final number never flashes first
+    let raf = 0;
     const io = new IntersectionObserver(([e]) => {
       if (!e.isIntersecting) return; io.disconnect();
       const t0 = performance.now();
       const ease = (t: number) => (t === 1 ? 1 : 1 - Math.pow(2, -10 * t)); // ease-out-expo
-      const tick = (t: number) => { const p = Math.min(1, (t - t0) / duration); setV(Math.round(from + (to - from) * ease(p))); if (p < 1) requestAnimationFrame(tick); };
-      requestAnimationFrame(tick);
+      const tick = (t: number) => { el.dataset.ready = ''; const p = Math.min(1, (t - t0) / duration); setV(Math.round(from + (to - from) * ease(p))); if (p < 1) raf = requestAnimationFrame(tick); };
+      raf = requestAnimationFrame(tick);
     }, { threshold: 0.6 });
-    io.observe(el); return () => io.disconnect();
+    io.observe(el); return () => { io.disconnect(); cancelAnimationFrame(raf); };
   }, [to, raw, duration]);
-  return <span ref={ref} className="t-num">{v}</span>;
+  return <span ref={ref} className="t-num count-up">{v}</span>;
 }
 
 export function StatsScoreboard({ stats }: { stats: { value: number | null; label: string; raw?: boolean }[] }) {
@@ -72,7 +73,9 @@ export function StatementReveal({ text }: { text: string }) {
   useEffect(() => {
     const el = ref.current; if (!el || prefersReducedMotion()) return;
     let kill = () => {};
+    let cancelled = false;
     loadGsap().then(({ ScrollTrigger }) => {
+      if (cancelled) return; // unmounted before GSAP finished loading
       const words = Array.from(el.querySelectorAll<HTMLElement>('.w'));
       const st = ScrollTrigger.create({
         trigger: el, start: 'top 80%', end: 'bottom 45%', scrub: true,
@@ -80,7 +83,7 @@ export function StatementReveal({ text }: { text: string }) {
       });
       kill = () => st.kill();
     });
-    return () => kill();
+    return () => { cancelled = true; kill(); };
   }, []);
   const words = text.split(' ');
   return (

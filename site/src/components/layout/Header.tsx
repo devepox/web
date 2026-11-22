@@ -28,7 +28,8 @@ export function Header() {
   const [svc, setSvc] = useState(0); // service previewed in the mega-menu
   const [sheet, setSheet] = useState(false);
   const [sheetTone, setSheetTone] = useState(false); // lags the close by half the 900 ms sweep so the logo flips as the panel leaves
-  useEffect(() => { if (sheet) { setSheetTone(true); return; } const t = window.setTimeout(() => setSheetTone(false), 450); return () => window.clearTimeout(t); }, [sheet]);
+  if (sheet && !sheetTone) setSheetTone(true);
+  useEffect(() => { if (sheet) return; const t = window.setTimeout(() => setSheetTone(false), 450); return () => window.clearTimeout(t); }, [sheet]);
   const [stuck, setStuck] = useState(false);
   const [hidden, setHidden] = useState(false);
   const [tone, setTone] = useState<'light' | 'dark'>('dark');
@@ -37,13 +38,16 @@ export function Header() {
   const readRef = useRef<HTMLDivElement>(null);
   const reading = pathname !== '/' && pathname !== '/contact'; // long pages only
   const workRef = useRef<HTMLAnchorElement>(null);
-  const panelRefs = { services: useRef<HTMLDivElement>(null), company: useRef<HTMLDivElement>(null) };
+  const servicesPanelRef = useRef<HTMLDivElement>(null);
+  const companyPanelRef = useRef<HTMLDivElement>(null);
+  const panelRefs = { services: servicesPanelRef, company: companyPanelRef };
   const triggerRefs = { services: useRef<HTMLButtonElement>(null), company: useRef<HTMLButtonElement>(null) };
   const closeTimer = useRef<number>(0);
   const lastY = useRef(0);
 
-  // close menus on navigation
-  useEffect(() => { setPanel(null); setSheet(false); }, [pathname]);
+  // close menus on navigation (state reset while rendering, not in an effect)
+  const [seenPath, setSeenPath] = useState(pathname);
+  if (seenPath !== pathname) { setSeenPath(pathname); setPanel(null); setSheet(false); }
 
   // stuck / hide on scroll / tone from the section under the header
   useEffect(() => {
@@ -110,7 +114,7 @@ export function Header() {
           {(['services', 'company'] as const).map(p => (
             <button key={p} ref={triggerRefs[p]} type="button" className="nav-link" aria-expanded={panel === p} aria-controls="mega"
               onMouseEnter={() => open(p)} onFocus={() => open(p)}
-              onClick={() => setPanel(panel === p ? null : p)}
+              onClick={() => open(p)}
               onKeyDown={(e) => {
                 // Tab / ArrowDown on an open trigger moves into its panel
                 if ((e.key === 'ArrowDown' || (e.key === 'Tab' && !e.shiftKey)) && panel === p) {
@@ -137,7 +141,7 @@ export function Header() {
               }
             }}>
             {/* Services: a typographic index (foil bar marks the active area) + the area's big foil number and promise */}
-            <div ref={panelRefs.services} className="mega-panel w-[760px]" data-active={panel === 'services'} aria-hidden={panel !== 'services'}>
+            <div ref={servicesPanelRef} className="mega-panel w-[760px]" data-active={panel === 'services'} aria-hidden={panel !== 'services'}>
               <div className="grid grid-cols-[minmax(300px,1fr)_340px] gap-6">
                 <div className="mega-index py-2" style={{ '--row': svc, '--row-h': '46px' } as CSSProperties}>
                   <span className="mega-marker" aria-hidden />
@@ -162,7 +166,7 @@ export function Header() {
                 </div>
               </div>
             </div>
-            <div ref={panelRefs.company} className="mega-panel w-[420px]" data-active={panel === 'company'} aria-hidden={panel !== 'company'}>
+            <div ref={companyPanelRef} className="mega-panel w-[420px]" data-active={panel === 'company'} aria-hidden={panel !== 'company'}>
               <ul className="grid gap-1">
                 {company.map(c => (
                   <li key={c.href}>

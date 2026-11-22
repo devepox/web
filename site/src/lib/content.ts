@@ -6,7 +6,7 @@ export const company = {
   country: 'Pakistan',
   founded: 2019,
   timezone: 'UTC+5',
-  email: '[PLACEHOLDER: email]',
+  email: 'info@epox.systems',
   whatsapp: '[PLACEHOLDER: WhatsApp]',
   bookingUrl: '', // [PLACEHOLDER: booking link]
 };
