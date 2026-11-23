@@ -6,8 +6,8 @@ import { whenIdle } from '@/lib/motion';
 /**
  * Home hero logo.
  * · Capable desktops (fine pointer, ≥768px wide, WebGL2, 4+ cores): the live 3D holographic-glass wordmark (GlassLogo,
- *   react-three-fiber), built only after the page has loaded, the visitor has moved / scrolled, and the browser is idle;
- *   animates only while on screen.
+ *   plain three.js, scene in glass-scene.js), built only after the page has loaded, the visitor has moved / scrolled, and
+ *   the browser is idle; draws only while on screen, at full rate only while something moves.
  * · Everyone else: the same glass scene rendered as a seamless loop (scripts/logo-3d/loop.js; files in public/media/liquid-logo), 16:9 or 4:5.
  * A light WebP still (only the one for this screen size downloads) always shows first, so the first paint stays fast;
  * the 3D or the video fades in over it. Reduced motion or Data Saver: the still only.

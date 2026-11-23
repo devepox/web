@@ -1,0 +1,31 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>epox glass logo (render harness)</title>
+<style>html,body{margin:0;background:#0B0C0F;overflow:hidden}canvas{display:block}</style>
+<!-- served by scripts/logo-3d/loop.js from the repo root, so it runs the site's own scene module and three.js copy -->
+<script type="importmap">{"imports":{"three":"/site/node_modules/three/build/three.module.js","three/examples/jsm/":"/site/node_modules/three/examples/jsm/"}}</script>
+</head><body>
+<script type="module">
+/*
+ * Renders site/src/components/brand/glass-scene.js, the same code the live hero runs, for the fallback loops and stills.
+ * Query: w, h (pixels), fit (word width as a share of the frame), bx/by/bs (foil bars backdrop), sway, q (quality).
+ * Exposes window.ready, window.renderAt(t) → PNG data URL (t in [0, 1), seamless), window.setupMs.
+ */
+import { createGlassScene } from '/site/src/components/brand/glass-scene.js';
+const P = new URLSearchParams(location.search);
+const W = +(P.get('w') ?? 1920), H = +(P.get('h') ?? 1080);
+const src = await (await fetch('/site/src/components/brand/wordmark-path.ts')).text();
+const path = src.match(/WORDMARK_PATH = '([^']+)'/)[1];
+const canvas = document.createElement('canvas'); canvas.style.width = W + 'px'; canvas.style.height = H + 'px'; document.body.append(canvas);
+const s = createGlassScene(canvas, {
+  path, quality: P.get('q') ?? 'export', fit: +(P.get('fit') ?? 0.6), dpr: 1, preserve: true, intro: false,
+  bars: { x: +(P.get('bx') ?? 340), y: +(P.get('by') ?? 60), s: +(P.get('bs') ?? 1.15) },
+  look: P.get('look') ? JSON.parse(P.get('look')) : undefined, // tuning only
+});
+s.resize(W, H);
+await s.compiling;
+const sway = +(P.get('sway') ?? 0.7);
+window.setupMs = Math.round(s.setupMs);
+window.renderAt = (t) => { s.renderAt(t, sway); return canvas.toDataURL('image/png'); };
+window.ready = true;
+</script>
+</body></html>
