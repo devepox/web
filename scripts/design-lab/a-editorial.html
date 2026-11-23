@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Direction A · Editorial</title>
+<link rel="stylesheet" href="lab.css">
+<style>
+/* A · Editorial: the type is the image. Oversized Space Grotesk on a 12-column grid, hairlines, numbers, a lot of black.
+   Foil appears three times: the wordmark, the giant cropped E anchoring the hero, and the Found corners on one word. */
+.wrap { padding: 0 48px; }
+nav { display: flex; align-items: center; justify-content: space-between; height: 84px; }
+nav .wm { width: 92px; }
+nav .links { display: flex; gap: 40px; font: 500 15px/1 IN; color: var(--muted); }
+nav .cta { font: 700 15px/1 IN; color: var(--text); padding-bottom: 6px; background: var(--foil) 0 100% / 100% 2px no-repeat; }
+.hero { position: relative; height: 816px; overflow: hidden; }
+.meta { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; border-top: 1px solid var(--line); padding-top: 14px; margin-top: 18px; }
+h1 { font-size: 150px; line-height: .9; letter-spacing: -0.045em; margin: 56px 0 0; position: relative; z-index: 1; }
+h1 .dim { color: #808897; }
+.hero .e { position: absolute; right: -2px; bottom: 48px; width: 560px; }
+.hero .foot { position: absolute; left: 0; top: 624px; width: 520px; display: grid; gap: 28px; z-index: 1; }
+.hero .foot p { margin: 0; font-size: 19px; line-height: 1.5; color: var(--muted); }
+.row { display: flex; gap: 12px; }
+section { border-top: 1px solid var(--line); }
+.sec-head { display: grid; grid-template-columns: 3fr 9fr; padding: 40px 0 24px; align-items: baseline; }
+.sec-head h2 { font-size: 64px; line-height: 1; margin: 0; }
+.work-row { display: grid; grid-template-columns: 80px 1fr 300px; gap: 24px; padding: 40px 0; border-top: 1px solid var(--line); position: relative; }
+.work-row .n { font: 600 15px/1 IN; color: var(--muted); padding-top: 18px; }
+.work-row h3 { font-size: 80px; line-height: .95; letter-spacing: -0.035em; margin: 0; max-width: 14ch; }
+.work-row dl { margin: 10px 0 0; display: grid; gap: 14px; font-size: 15px; } .work-row dt { margin: 0; } .work-row dd { margin: 4px 0 0; }
+.work-row.hot h3 { color: var(--text); } .work-row:not(.hot) h3 { color: #808897; }
+.peek { position: absolute; right: 360px; top: 34px; width: 270px; aspect-ratio: 4/3; border-radius: 14px; overflow: hidden; background: #111318; box-shadow: inset 0 0 0 1px var(--line); transform: rotate(-3deg); }
+.peek .bars { position: absolute; right: -2px; top: 22%; width: 70%; }
+.peek .ph { position: absolute; inset: auto 0 18px 0; }
+.svc { display: grid; grid-template-columns: 3fr 9fr; padding: 40px 0 80px; }
+.svc ol { list-style: none; margin: 0; padding: 0; }
+.svc li { display: grid; grid-template-columns: 64px 1fr auto; align-items: baseline; border-top: 1px solid var(--line); padding: 18px 0; }
+.svc li .t { font: 700 46px/1.05 SG; letter-spacing: -0.03em; color: #808897; }
+.svc li .n { font: 600 14px/1 IN; color: var(--muted); }
+.svc li.hot .t { color: var(--text); padding-left: 34px; position: relative; }
+.svc li.hot .t::before { content: ''; position: absolute; left: 0; top: .22em; width: 18px; height: .72em; background: var(--foil); clip-path: polygon(28% 0, 100% 0, 72% 100%, 0 100%); }
+.svc li.hot .p { color: var(--muted); font-size: 16px; }
+@media (max-width: 700px) {
+  .wrap { padding: 0 20px; }
+  nav { height: 64px; } nav .links, nav .cta { display: none; } nav .wm { width: 72px; }
+  nav::after { content: ''; width: 22px; height: 12px; border-top: 2px solid var(--text); border-bottom: 2px solid var(--text); }
+  .hero { height: 760px; }
+  .meta { grid-template-columns: 1fr 1fr; row-gap: 10px; }
+  h1 { font-size: 64px; margin-top: 40px; line-height: .92; }
+  .hero .e { width: 190px; bottom: auto; top: 430px; }
+  .hero .foot { left: 0; right: 0; top: auto; bottom: 28px; width: auto; gap: 24px; } .hero .foot p { font-size: 17px; }
+  .sec-head { grid-template-columns: 1fr; gap: 12px; } .sec-head h2 { font-size: 40px; }
+  .work-row { grid-template-columns: 1fr; gap: 12px; padding: 28px 0; } .work-row h3 { font-size: 38px; } .work-row .n { padding: 0; }
+  .peek { display: none; }
+  .svc { grid-template-columns: 1fr; gap: 20px; } .svc li { grid-template-columns: 40px 1fr; } .svc li .t { font-size: 28px; } .svc li .p { display: none; }
+}
+</style></head><body>
+<div class="wrap">
+  <nav><div class="wm" data-wordmark></div><div class="links"><span>Work</span><span>Services</span><span>How we work</span><span>About</span></div><span class="cta">Let's talk ↗</span></nav>
+  <div class="hero">
+    <div class="meta"><span class="label">Software house</span><span class="label">Faisalabad · UTC+5</span><span class="label">Since 2019</span><span class="label live">2 products live</span></div>
+    <h1 class="sg">We find the<br><span class="found">problem</span> before<br><span class="dim">you do.</span></h1>
+    <div class="e" data-e></div>
+    <div class="foot">
+      <p>We build web, mobile and AI software, then stay to keep it running. If we reached out to you, we've already found something worth fixing.</p>
+      <div class="row"><a class="pill foil">Let's talk →</a><a class="pill outline">See our work</a></div>
+    </div>
+  </div>
+  <section>
+    <div class="sec-head"><span class="label">Selected work</span><h2 class="sg">Two products, both still live</h2></div>
+    <div class="work-row hot"><span class="n num">01</span><h3 class="sg">Apps that settle rental disputes before they start</h3>
+      <dl><div><dt class="label">Sector</dt><dd>PropTech · Europe</dd></div><div><dt class="label">Platforms</dt><dd>iOS · Android · Web</dd></div><div><dt class="label">Status</dt><dd class="live">Live, run by us</dd></div></dl>
+      <div class="peek"><div class="bars" data-e></div><div class="ph">[ASSET: case 001 screens, shown on hover]</div></div></div>
+    <div class="work-row"><span class="n num">02</span><h3 class="sg">A nutrition app with a real nutritionist inside</h3>
+      <dl><div><dt class="label">Sector</dt><dd>Health &amp; nutrition</dd></div><div><dt class="label">Platforms</dt><dd>iOS · Android · Web</dd></div><div><dt class="label">Status</dt><dd class="live">Live, run by us</dd></div></dl></div>
+  </section>
+  <section class="svc">
+    <div><span class="label">Services</span><p class="muted" style="max-width:24ch;margin-top:16px">Whatever you need built probably fits one of these.</p></div>
+    <ol>
+      <li><span class="n num">01</span><span class="t">Web &amp; SaaS development</span><span></span></li>
+      <li class="hot"><span class="n num">02</span><span class="t">Mobile apps</span><span class="p">iOS and Android apps people keep opening →</span></li>
+      <li><span class="n num">03</span><span class="t">Business software</span><span></span></li>
+      <li><span class="n num">04</span><span class="t">AI solutions</span><span></span></li>
+      <li><span class="n num">05</span><span class="t">UI/UX &amp; branding</span><span></span></li>
+      <li><span class="n num">06</span><span class="t">Cloud &amp; DevOps</span><span></span></li>
+      <li><span class="n num">07</span><span class="t">Launch, growth &amp; support</span><span></span></li>
+    </ol>
+  </section>
+</div>
+<script type="module" src="lab.js"></script>
+</body></html>

@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Direction B · Stage</title>
+<link rel="stylesheet" href="lab.css">
+<style>
+/* B · Stage: the 3D glass logo is the whole stage. It fills the first screen; as you scroll it turns and steps aside,
+   and its three foil bars slide out across the page to become the rails the services sit on. Work shows on panes of
+   the same glass. Few words, big moments. (Static frames of a scroll story; the captions say what moves.) */
+.frame { position: relative; overflow: hidden; }
+.cap { position: absolute; z-index: 3; font: 600 12px/1.4 IN; letter-spacing: .04em; color: #0B0C0F; background: #F3F5F8; padding: 6px 10px; border-radius: 8px; }
+nav { position: absolute; z-index: 3; inset: 0 0 auto 0; display: flex; align-items: center; justify-content: space-between; height: 84px; padding: 0 48px; }
+nav .wm { width: 84px; } nav .links { display: flex; gap: 36px; font: 500 15px/1 IN; color: var(--muted); }
+.hero { height: 900px; }
+.hero img { position: absolute; inset: -40px -120px 0 -60px; width: calc(100% + 180px); height: calc(100% + 40px); object-fit: cover; object-position: 60% 46%; transform: scale(1.12); }
+.hero::after { content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(180deg, rgba(11,12,15,.85) 0, rgba(11,12,15,0) 16%, rgba(11,12,15,0) 52%, rgba(11,12,15,.92) 80%, #0B0C0F 100%); }
+.hero .bottom { position: absolute; z-index: 2; left: 48px; right: 48px; bottom: 48px; display: flex; justify-content: space-between; align-items: flex-end; }
+.hero h1 { font-size: 64px; line-height: 1.02; margin: 0; max-width: 11ch; }
+.hero .side { display: grid; justify-items: end; gap: 18px; }
+.scroll { font: 600 12px/1 IN; letter-spacing: .22em; text-transform: uppercase; color: var(--muted); display: flex; align-items: center; gap: 12px; }
+.scroll::after { content: ''; width: 1px; height: 40px; background: var(--line-strong); }
+/* rails */
+.rails { height: 900px; border-top: 1px solid var(--line); }
+.rails .small { position: absolute; right: 48px; top: 40px; width: 380px; border-radius: 14px; overflow: hidden; transform: rotate(-4deg); }
+.rails .small img { display: block; width: 100%; }
+.rails h2 { position: absolute; left: 48px; top: 64px; font-size: 56px; line-height: 1.05; margin: 0; max-width: 12ch; }
+.rail { position: absolute; left: 0; right: 0; height: 96px; }
+.rail .bar { position: absolute; inset: 0 0 0 var(--l); background: var(--foil); background-size: 120% 100%; clip-path: polygon(34px 0, 100% 0, 100% 100%, 0 100%); }
+.rail .bar::after { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(-55deg, rgba(255,255,255,.2) 0 1px, transparent 1px 4px); }
+.rail .name { position: absolute; z-index: 1; left: calc(var(--l) + 64px); top: 50%; transform: translateY(-50%); font: 700 44px/1 SG; letter-spacing: -0.02em; color: #0B0C0F; }
+.rail .list { position: absolute; z-index: 1; left: calc(var(--l) + 330px); top: 50%; transform: translateY(-50%); font: 600 16px/1.4 IN; color: #0B0C0F; }
+/* glass panes */
+.panes { height: 820px; border-top: 1px solid var(--line); }
+.panes .bg { position: absolute; inset: 120px -40px 80px 200px; }
+.pane { position: absolute; width: 560px; padding: 36px; border-radius: 22px; background: rgba(11,12,15,.55); backdrop-filter: blur(26px) saturate(1.4); -webkit-backdrop-filter: blur(26px) saturate(1.4);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.28), inset 0 1px 0 rgba(255,255,255,.5); }
+.pane h3 { font-size: 40px; line-height: 1.04; margin: 14px 0 0; }
+.pane p { margin: 14px 0 0; color: #DDE3EA; font-size: 16px; }
+.pane .meta { display: flex; gap: 24px; margin-top: 24px; font-size: 14px; }
+.panes h2 { position: absolute; left: 48px; top: 56px; font-size: 56px; margin: 0; }
+@media (max-width: 700px) {
+  nav { padding: 0 20px; height: 64px; } nav .links { display: none; } nav .wm { width: 68px; }
+  nav::after { content: ''; width: 22px; height: 12px; border-top: 2px solid var(--text); border-bottom: 2px solid var(--text); }
+  .hero { height: 844px; } .hero img { inset: 40px -40px auto -40px; width: calc(100% + 80px); height: 560px; transform: none; object-position: 50% 50%; }
+  .hero .bottom { left: 20px; right: 20px; bottom: 32px; flex-direction: column; align-items: flex-start; gap: 24px; } .hero h1 { font-size: 44px; } .hero .side { justify-items: start; }
+  .rails { height: 760px; } .rails h2 { left: 20px; top: 40px; font-size: 36px; } .rails .small { display: none; }
+  .rail { height: 150px; --l: 20px !important; } .rail.r1 { top: 230px !important; } .rail.r2 { top: 400px !important; } .rail.r3 { top: 570px !important; } .rail .name { left: calc(var(--l) + 40px); top: 34px; transform: none; font-size: 32px; } .rail .list { left: calc(var(--l) + 40px); top: 82px; transform: none; font-size: 14px; max-width: 250px; }
+  .panes { height: 1040px; } .panes h2 { left: 20px; font-size: 36px; max-width: 12ch; } .pane { width: auto; left: 20px !important; right: 20px; padding: 24px; } .pane h3 { font-size: 28px; }
+  .panes .bg { inset: 200px -200px 60px -40px; } .pane.p1 { top: 260px !important; } .pane.p2 { top: 660px !important; }
+  .cap { display: none; }
+}
+</style></head><body>
+<section class="frame hero">
+  <img src="assets/glass-16x9.jpg" alt="">
+  <nav><div class="wm" data-wordmark></div><div class="links"><span>Work</span><span>Services</span><span>How we work</span><span>About</span></div><a class="pill outline" style="height:44px">Let's talk</a></nav>
+  <span class="cap" style="right:48px;top:110px">Live 3D: the glass turns toward your cursor</span>
+  <div class="bottom">
+    <h1 class="sg">We find the <span class="found">problem</span> before you do.</h1>
+    <div class="side"><a class="pill foil">Let's talk →</a><span class="scroll">Scroll</span></div>
+  </div>
+</section>
+<section class="frame rails">
+  <span class="cap" style="left:48px;top:16px">On scroll: the logo steps aside and its three bars slide out to carry the services</span>
+  <div class="small"><img src="assets/glass-16x9-turned.jpg" alt=""></div>
+  <h2 class="sg">Three things we do, seven ways to help</h2>
+  <div class="rail r1" style="--l:220px;top:330px"><div class="bar"></div><span class="name">Build</span><span class="list">Web &amp; SaaS · Mobile apps · Business software · AI solutions</span></div>
+  <div class="rail r2" style="--l:280px;top:470px"><div class="bar"></div><span class="name">Design</span><span class="list">UI/UX &amp; branding</span></div>
+  <div class="rail r3" style="--l:160px;top:610px"><div class="bar"></div><span class="name">Run</span><span class="list">Cloud &amp; DevOps · Launch, growth &amp; support</span></div>
+</section>
+<section class="frame panes">
+  <h2 class="sg">Still live, still run by us</h2>
+  <div class="bg" data-e></div>
+  <span class="cap" style="right:48px;top:24px">Work sits on panes of the same glass, over the bars</span>
+  <div class="pane p1" style="left:120px;top:210px"><span class="label">Case 001 · PropTech · Europe</span><h3 class="sg">Apps that settle rental disputes before they start</h3>
+    <p>Tenants photograph the property at move‑in into a tamper‑proof record, then both sides compare it side by side at move‑out.</p><div class="meta"><span>iOS · Android · Web</span><span class="live">Live</span></div></div>
+  <div class="pane p2" style="left:720px;top:420px"><span class="label">Case 002 · Health &amp; nutrition</span><h3 class="sg">A nutrition app with a real nutritionist inside</h3>
+    <p>People log meals, then talk directly to a real nutrition doctor inside the app.</p><div class="meta"><span>iOS · Android · Web</span><span class="live">Live</span></div></div>
+</section>
+<script type="module" src="lab.js"></script>
+<script>if (matchMedia('(max-width: 700px)').matches) document.querySelector('.hero img').src = 'assets/glass-4x5.jpg';</script>
+</body></html>

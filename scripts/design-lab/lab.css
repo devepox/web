@@ -1,0 +1,33 @@
+/* Design lab (2026-11-23): shared base for the three direction mockups. Ice Mint tokens, brand fonts from the site. */
+@font-face { font-family: SG; src: url(/site/src/app/fonts/space-grotesk-latin-500-normal.woff2) format('woff2'); font-weight: 500; }
+@font-face { font-family: SG; src: url(/site/src/app/fonts/space-grotesk-latin-700-normal.woff2) format('woff2'); font-weight: 700; }
+@font-face { font-family: IN; src: url(/site/src/app/fonts/inter-latin-400-normal.woff2) format('woff2'); font-weight: 400; }
+@font-face { font-family: IN; src: url(/site/src/app/fonts/inter-latin-500-normal.woff2) format('woff2'); font-weight: 500; }
+@font-face { font-family: IN; src: url(/site/src/app/fonts/inter-latin-600-normal.woff2) format('woff2'); font-weight: 600; }
+@font-face { font-family: IN; src: url(/site/src/app/fonts/inter-latin-700-normal.woff2) format('woff2'); font-weight: 700; }
+:root {
+  --black: #0B0C0F; --surface: #16181D; --raised: #1C1F25; --paper: #F3F5F8; --text: #F2F5F9; --muted: #B9C0CB;
+  --line: #3F4652; --line-strong: #808897; --ink: #0B0C0F; --ink-muted: #464D59; --paper-line: #B4BCC8;
+  --foil: linear-gradient(115deg, #BFE3FF 0%, #E2FFF4 20%, #8FC9FF 40%, #7FF5D0 58%, #E4FBFF 78%, #A8F0E0 100%);
+  --azure: #1E8CFF;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--black); color: var(--text); font: 400 16px/1.6 IN, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+.sg { font-family: SG, system-ui, sans-serif; font-weight: 700; letter-spacing: -0.02em; }
+.label { font: 700 11px/1.4 IN; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted); }
+.muted { color: var(--muted); }
+.num { font-variant-numeric: tabular-nums; }
+.foil-bg { background: var(--foil); background-size: 200% 200%; }
+.pill { display: inline-flex; align-items: center; gap: 8px; height: 52px; padding: 0 28px; border-radius: 999px; font: 700 15px/1 IN; color: var(--ink); text-decoration: none; }
+.pill.foil { background: var(--foil); background-size: 300% 300%; background-position: 30% 40%; }
+.pill.outline { color: var(--text); box-shadow: inset 0 0 0 1.5px var(--line-strong); }
+.pill.ink { background: var(--ink); color: var(--text); }
+.live::before { content: ''; display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 8px; background: var(--foil); vertical-align: 1px; }
+/* found corners (the site's "Found" device) */
+.found { position: relative; padding: 0 .14em; }
+.found::after { content: ''; position: absolute; inset: .2em -.02em .02em; pointer-events: none; --l: .2em; --t: max(2px, .028em);
+  background: var(--foil); -webkit-mask: linear-gradient(#000 0 0) top left / var(--l) var(--t), linear-gradient(#000 0 0) top left / var(--t) var(--l),
+    linear-gradient(#000 0 0) top right / var(--l) var(--t), linear-gradient(#000 0 0) top right / var(--t) var(--l),
+    linear-gradient(#000 0 0) bottom left / var(--l) var(--t), linear-gradient(#000 0 0) bottom left / var(--t) var(--l),
+    linear-gradient(#000 0 0) bottom right / var(--l) var(--t), linear-gradient(#000 0 0) bottom right / var(--t) var(--l); -webkit-mask-repeat: no-repeat; }
+.ph { display: grid; place-items: center; font: 600 11px/1.4 IN; letter-spacing: .04em; color: var(--muted); }

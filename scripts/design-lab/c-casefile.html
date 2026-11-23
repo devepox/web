@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Direction C · Case file</title>
+<link rel="stylesheet" href="lab.css">
+<style>
+/* C · Case file: the site acts out the brand idea. The hero is a first look at a (generic, example) product with the
+   foil viewfinder corners locking onto what is wrong and numbered notes beside them; the work reads as case files
+   on Paper. The Found corners and the scan line become the one recurring device. Room for the characters later. */
+.wrap { padding: 0 48px; }
+nav { display: flex; align-items: center; justify-content: space-between; height: 84px; }
+nav .wm { width: 84px; } nav .links { display: flex; gap: 36px; font: 500 15px/1 IN; color: var(--muted); }
+.hero { display: grid; grid-template-columns: 5fr 7fr; gap: 56px; align-items: center; min-height: 816px; }
+.hero h1 { font-size: 80px; line-height: 1; margin: 22px 0 0; text-wrap: balance; }
+.hero p { font-size: 19px; color: var(--muted); max-width: 40ch; margin: 28px 0 0; }
+.row { display: flex; gap: 12px; margin-top: 36px; }
+/* the "first look": an example product in a browser frame, on Paper */
+.look { position: relative; }
+.browser { position: relative; border-radius: 16px; background: var(--paper); box-shadow: inset 0 0 0 1px #D8DDE5; overflow: hidden; aspect-ratio: 16 / 11.5; color: var(--ink); }
+.bar { height: 40px; display: flex; align-items: center; gap: 7px; padding: 0 16px; border-bottom: 1px solid #D8DDE5; }
+.bar i { width: 9px; height: 9px; border-radius: 50%; background: #C9D0DA; } .bar .url { margin-left: 18px; height: 22px; flex: 1; max-width: 300px; border-radius: 99px; background: #E3E8EE; }
+.wf { position: absolute; inset: 40px 0 0 0; padding: 26px 30px; }
+.blk { position: absolute; border-radius: 6px; background: #DCE2EA; } .blk.d { background: #C4CCD7; } .blk.ink { background: #0B0C0F; }
+/* viewfinder corners in foil + glow, over the paper (the one foil device on Paper in this direction) */
+.vf { position: absolute; z-index: 2; --l: 18px; --t: 3px; }
+.vf::after { content: ''; position: absolute; inset: 0; background: linear-gradient(115deg, #1E8CFF, #22B8A8 60%, #1E8CFF);
+  -webkit-mask: linear-gradient(#000 0 0) top left / var(--l) var(--t), linear-gradient(#000 0 0) top left / var(--t) var(--l), linear-gradient(#000 0 0) top right / var(--l) var(--t), linear-gradient(#000 0 0) top right / var(--t) var(--l),
+    linear-gradient(#000 0 0) bottom left / var(--l) var(--t), linear-gradient(#000 0 0) bottom left / var(--t) var(--l), linear-gradient(#000 0 0) bottom right / var(--l) var(--t), linear-gradient(#000 0 0) bottom right / var(--t) var(--l); -webkit-mask-repeat: no-repeat; }
+.pin { position: absolute; z-index: 3; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; background: #0B0C0F; color: #F2F5F9; font: 700 12px/1 IN; }
+.note { position: absolute; z-index: 3; width: 230px; padding: 12px 14px; border-radius: 12px; background: #16181D; box-shadow: inset 0 0 0 1px #3F4652; font: 500 13px/1.4 IN; color: #F2F5F9; }
+.note b { display: block; font: 700 11px/1.3 IN; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+.scanline { position: absolute; z-index: 1; top: 40px; bottom: 0; left: 62%; width: 2px; background: linear-gradient(180deg, transparent, #7FF5D0 20%, #BFE3FF 80%, transparent); box-shadow: 0 0 18px 2px rgba(127,245,208,.5); }
+.cap { font: 500 13px/1.4 IN; color: var(--muted); margin-top: 14px; }
+/* case files */
+section { border-top: 1px solid var(--line); padding: 72px 0 96px; }
+section h2 { font-size: 56px; line-height: 1.05; margin: 14px 0 48px; max-width: 16ch; }
+.files { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+.file { position: relative; background: var(--paper); color: var(--ink); border-radius: 0 14px 14px 14px; padding: 36px 36px 32px; margin-top: 30px; }
+.file .tab { position: absolute; left: 0; top: -30px; height: 30px; padding: 0 18px; border-radius: 12px 12px 0 0; background: var(--paper); display: flex; align-items: center; font: 700 11px/1 IN; letter-spacing: .22em; color: var(--ink-muted); }
+.file h3 { font-size: 36px; line-height: 1.05; margin: 0; max-width: 18ch; }
+.file dl { display: grid; gap: 16px; margin: 26px 0 0; } .file dt { font: 700 11px/1.3 IN; letter-spacing: .22em; text-transform: uppercase; color: var(--ink-muted); } .file dd { margin: 4px 0 0; font-size: 16px; }
+.stamp { position: absolute; right: 28px; top: 26px; transform: rotate(8deg); border: 2.5px solid var(--ink); border-radius: 8px; padding: 6px 12px; font: 700 13px/1 IN; letter-spacing: .2em; }
+.ph-ink { display: inline-block; padding: 2px 6px; border-radius: 4px; background: rgba(11,12,15,.08); font: 600 12px/1.4 IN; }
+@media (max-width: 700px) {
+  .wrap { padding: 0 20px; } nav { height: 64px; } nav .links { display: none; } nav .wm { width: 68px; }
+  nav::after { content: ''; width: 22px; height: 12px; border-top: 2px solid var(--text); border-bottom: 2px solid var(--text); }
+  .hero { grid-template-columns: 1fr; gap: 36px; min-height: 0; padding: 32px 0 64px; } .hero h1 { font-size: 46px; } .hero p { font-size: 17px; }
+  .look { display: grid; gap: 10px; } .note { position: static; width: auto; } .browser { aspect-ratio: 4 / 5; } .look .cap { margin-top: 8px !important; text-align: left !important; }
+  .stamp { top: auto; bottom: 22px; }
+  section h2 { font-size: 36px; } .files { grid-template-columns: 1fr; gap: 56px; } .file h3 { font-size: 28px; } .file { padding: 28px 22px; }
+}
+</style></head><body>
+<div class="wrap">
+  <nav><div class="wm" data-wordmark></div><div class="links"><span>Work</span><span>Services</span><span>How we work</span><span>About</span></div><a class="pill outline" style="height:44px">Let's talk</a></nav>
+  <div class="hero">
+    <div>
+      <span class="label">Software house · Faisalabad · since 2019</span>
+      <h1 class="sg">We find the <span class="found">problem</span> before you do.</h1>
+      <p>Every project starts with a first look like this one. Then we build the fix, and stay to keep it running.</p>
+      <div class="row"><a class="pill foil">Get a first look →</a><a class="pill outline">See our work</a></div>
+    </div>
+    <div class="look">
+      <div class="browser">
+        <div class="bar"><i></i><i></i><i></i><span class="url"></span></div>
+        <div class="wf">
+          <div class="blk" style="left:30px;top:22px;width:90px;height:16px"></div>
+          <div class="blk" style="right:30px;top:22px;width:220px;height:16px"></div>
+          <div class="blk d" style="left:30px;top:80px;width:46%;height:30px"></div>
+          <div class="blk" style="left:30px;top:122px;width:38%;height:12px"></div>
+          <div class="blk" style="left:30px;top:142px;width:34%;height:12px"></div>
+          <div class="blk" style="right:30px;top:76px;width:40%;height:150px"></div>
+          <div class="blk" style="left:30px;top:262px;width:28%;height:120px"></div>
+          <div class="blk" style="left:calc(30px + 30% + 6px);top:262px;width:28%;height:120px"></div>
+          <div class="blk" style="right:30px;top:262px;width:28%;height:120px"></div>
+          <div class="blk ink" style="left:30px;top:410px;width:150px;height:36px;border-radius:99px"></div>
+        </div>
+        <div class="scanline"></div>
+        <div class="vf" style="left:20px;top:440px;width:174px;height:56px"></div>
+        <div class="vf" style="right:20px;top:106px;width:42%;height:170px"></div>
+        <div class="vf" style="left:58%;top:292px;width:31%;height:140px"></div>
+        <span class="pin" style="left:186px;top:430px">1</span>
+        <span class="pin" style="right:12px;top:96px">2</span>
+        <span class="pin" style="left:calc(58% + 31% - 10px);top:282px">3</span>
+      </div>
+      <div class="note" style="left:-40px;bottom:-34px"><b>01 · Sign‑up</b>The main button is below the fold on most phones.</div>
+      <div class="note" style="right:-28px;top:-28px"><b>02 · Speed</b>The hero image is 4 MB; the page waits for it.</div>
+      <div class="note" style="right:-28px;bottom:30px"><b>03 · Checkout</b>Nine fields where four would do.</div>
+      <p class="cap" style="margin-top:96px;text-align:right">Example of a first look, on a made‑up product. Yours comes with real numbers.</p>
+    </div>
+  </div>
+  <section>
+    <span class="label">Case files</span>
+    <h2 class="sg">Two problems we found, both products still live</h2>
+    <div class="files">
+      <article class="file"><span class="tab">CASE 001 · PROPTECH</span><span class="stamp">LIVE</span>
+        <h3 class="sg">Apps that settle rental disputes before they start</h3>
+        <dl><div><dt>Found</dt><dd>Nobody trusted a move‑in record the other side could have changed.</dd></div>
+          <div><dt>Built</dt><dd>A sealed photo record, compared room by room at move‑out. iOS, Android, web.</dd></div>
+          <div><dt>Result</dt><dd><span class="ph-ink">[PLACEHOLDER: result]</span></dd></div></dl></article>
+      <article class="file"><span class="tab">CASE 002 · HEALTH</span><span class="stamp">LIVE</span>
+        <h3 class="sg">A nutrition app with a real nutritionist inside</h3>
+        <dl><div><dt>Found</dt><dd>People logging meals had nobody to ask what the numbers meant.</dd></div>
+          <div><dt>Built</dt><dd>A real nutritionist inside the app, next to the meal log.</dd></div>
+          <div><dt>Result</dt><dd><span class="ph-ink">[PLACEHOLDER: result]</span></dd></div></dl></article>
+    </div>
+  </section>
+</div>
+<script type="module" src="lab.js"></script>
+</body></html>
