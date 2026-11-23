@@ -23,7 +23,7 @@ export default function ServicesPage() {
   return (
     <>
       <section className="hero" aria-labelledby="services-hero">
-        <FoilBars variant="short" className="hero-bars hero-bars--page" />
+        <FoilBars className="hero-bars hero-bars--page" />
         <div className="container-x pt-[calc(72px+var(--space-10))] pb-[var(--space-9)]">
           <p className="t-label muted hero-after" style={d(0)}>Services</p>
           <RiseText as="h1" on="load" id="services-hero" className="t-h1 mt-8" style={{ maxWidth: '14ch' }}
@@ -38,7 +38,7 @@ export default function ServicesPage() {
         <div className="container-x"><ServiceChapters items={services} /></div>
       </section>
 
-      <section className="section" aria-labelledby="models-title">
+      <section className="section soft" aria-labelledby="models-title">
         <div className="container-x">
           <SectionHeader id="models-title" label="Ways to work" title="Three ways to work with us" />
           <EngagementModels />

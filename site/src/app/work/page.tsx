@@ -24,7 +24,7 @@ export default function WorkPage() {
   return (
     <>
       <section className="hero" aria-labelledby="work-hero">
-        <FoilBars variant="short" className="hero-bars hero-bars--page" />
+        <FoilBars className="hero-bars hero-bars--page" />
         <div className="container-x pt-[calc(72px+var(--space-10))] pb-[var(--space-9)]">
           <p className="t-label muted hero-after" style={d(0)}>Work</p>
           <RiseText as="h1" on="load" id="work-hero" className="t-h1 mt-8" style={{ maxWidth: '15ch' }}

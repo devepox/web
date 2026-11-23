@@ -46,7 +46,7 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
     <>
       {/* hero */}
       <section className="hero" aria-labelledby="service-title">
-        <FoilBars variant="short" className="hero-bars hero-bars--page" />
+        <FoilBars className="hero-bars hero-bars--page" />
         <div className="container-x pt-[calc(72px+var(--space-10))] pb-[var(--space-9)]">
           <p className="t-label muted hero-after" style={d(0)}>
             <Link href="/services" className="link-quiet">Services</Link> · {s.title}
@@ -62,7 +62,7 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
       </section>
 
       {/* what we build */}
-      <section className="section" aria-labelledby="build-title">
+      <section className="section soft" aria-labelledby="build-title">
         <div className="container-x">
           <SectionHeader id="build-title" label="What we build" title={detail.buildTitle} />
           <ol className="grid gap-x-[var(--gutter)] gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
@@ -99,7 +99,7 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
 
       {/* related work */}
       {related.length > 0 && (
-        <section className="section" aria-labelledby="work-title">
+        <section className="section soft" aria-labelledby="work-title">
           <div className="container-x">
             <SectionHeader id="work-title" label="Work" title={related.length > 1 ? 'Both apps are still live' : 'Still live, still run by us'} action={<ArrowLink href="/work">All work</ArrowLink>} />
             <div className="grid gap-[var(--gutter)]">{related.map(c => <CaseCard key={c.slug} c={c} />)}</div>
@@ -121,7 +121,7 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
       {/* FAQ (L6) */}
       <section className="section" aria-labelledby="faq-title">
         <div className="container-x">
-          <SectionHeader id="faq-title" layout="split" label="FAQ" title="Questions we hear first" intro="Something not covered here? Ask, and a person who builds software will answer." action={<ArrowLink href="#contact">Ask a question</ArrowLink>} />
+          <SectionHeader id="faq-title" label="FAQ" title="Questions we hear first" />
           <Faq items={detail.faq.map(f => ({ q: f.q, a: <WithPh text={f.a} /> }))} />
         </div>
       </section>

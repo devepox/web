@@ -8,8 +8,8 @@
  * Writes site/public/og/<name>.jpg (1200 × 630): home.jpg, services.jpg, services-<slug>.jpg, work-<slug>.jpg …
  * Pages pick their image up through lib/og.ts. Re-run after changing a headline.
  *
- * Layout: brand-black ground, foil wordmark top left, the headline bottom left (Space Grotesk Bold, white).
- * Home carries the full foil E (card front); every other page the card back's three short bars.
+ * Layout: brand-black ground, foil wordmark top left, the full foil E running off the right edge (as on every hero),
+ * the page's hero label + headline bottom left (Space Grotesk Bold, white).
  */
 const fs = require('fs');
 const path = require('path');
@@ -50,7 +50,7 @@ body { width: 1200px; height: 630px; position: relative; overflow: hidden; backg
 .bars { position: absolute; right: 0; }
 .bars--e { top: 92px; width: 470px; }
 .bars--short { top: 74px; width: 300px; }
-.text { position: absolute; left: 72px; bottom: 68px; width: ${home ? 600 : 940}px; }
+.text { position: absolute; left: 72px; bottom: 68px; width: 620px; }
 .label { font: 700 18px/1.3 IN; letter-spacing: 0.22em; text-transform: uppercase; color: #B9C0CB; margin: 0 0 22px; }
 h1 { font: 700 var(--fs, 68px)/1.04 SG; letter-spacing: -0.02em; margin: 0; text-wrap: balance; }
 </style></head><body>${wordmark}${bars(home)}
@@ -82,12 +82,12 @@ const nameFor = r => (r === '/' ? 'home' : r.slice(1).replace(/\//g, '-'));
       const label = l && l.children.length > 1 ? [...l.children].map(c => clean(c.innerText)).join(' · ') : clean(l?.innerText);
       return { label, title: clean(h1.innerText) };
     });
-    await card.setContent(html({ label: r === '/' ? '' : label, title, home: r === '/' }));
+    await card.setContent(html({ label: r === '/' ? '' : label, title, home: true }));
     await card.evaluate(() => document.fonts.ready);
     // fit: shrink the headline until the text block stays clear of the wordmark / bars
     await card.evaluate(() => {
       const t = document.querySelector('.text'); let fs = 68;
-      while (t.getBoundingClientRect().top < 200 && fs > 40) { fs -= 2; document.body.style.setProperty('--fs', fs + 'px'); }
+      while (t.getBoundingClientRect().top < 170 && fs > 40) { fs -= 2; document.body.style.setProperty('--fs', fs + 'px'); }
     });
     const file = path.join(out, nameFor(r) + '.jpg');
     await card.screenshot({ path: file, type: 'jpeg', quality: 90 });

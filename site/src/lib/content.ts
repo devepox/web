@@ -81,23 +81,6 @@ export const cases: CaseStudy[] = [
   },
 ];
 
-/** Home "What we found": the problem each build started from (copy from the case stories). Results wait for the owner's numbers. */
-export const findings = [
-  {
-    slug: 'rental-inspection-app', n: '001', sector: 'PropTech · Europe',
-    // \u2011 = non-breaking hyphen, so "move-in" never splits across lines
-    found: "Tenants and landlords didn't trust a move\u2011in record the other side could have changed.",
-    built: 'A sealed photo record, made room by room at move\u2011in and compared side by side at move\u2011out.',
-    result: '[PLACEHOLDER: before → after, e.g. deposit disputes per 100 move\u2011outs]',
-  },
-  {
-    slug: 'nutrition-coaching-app', n: '002', sector: 'Health & nutrition',
-    found: 'People logging meals had nobody to ask what the numbers meant, so most stopped within weeks.',
-    built: 'A real nutritionist inside the app, in the same place people track what they eat.',
-    result: '[PLACEHOLDER: before → after, e.g. people still logging after 30 days]',
-  },
-];
-
 export const models = [
   { n: '01', title: 'Fixed project', best: 'A defined product or feature with a clear finish line.', points: ['Agreed scope, timeline and deliverables', 'One accountable project lead', 'Handover with docs and source code'] },
   { n: '02', title: 'Dedicated developers', best: 'Teams that need more hands without hiring.', points: ['Engineers working as part of your team', 'Your tools, your rituals', 'Scale up or down monthly'] },

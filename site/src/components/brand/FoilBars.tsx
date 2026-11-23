@@ -16,10 +16,6 @@ import { onLight } from '@/lib/light';
  *    back together into the E.
  * Runs only while on screen and moving. Reduced motion: static and whole.
  * Bars' right ends are extended past the viewBox (x 336 → 1336) so they run to the screen edge on any width; the section clips them.
- *
- * Two forms (brand book, Business card): variant "e" = the full E from the card front (home hero, footer, 404, form sent);
- * variant "short" = the three short bars from the card back (inner-page heroes, case covers), so the full mark keeps
- * its weight by appearing only where the page opens and closes.
  */
 
 // three slices of the E (bar + its part of the slanted spine), cut in the middle of each gap, overlapping 0.3 units
@@ -29,27 +25,13 @@ const SLICES = [
   '147.22,119.6 173.35,119.6 169.7,132.6 1336,132.6 1336,153.4 138,153.4',
 ];
 const DEPTH = [10, 24, 40]; // user units each layer travels right (top layer least)
-// card back: three short bars (9 units tall, 18 apart), the middle one set in; same slant as the E (2.5 over 9)
-const SHORT_SLICES = [
-  '234.5,22 1336,22 1336,31 232,31',
-  '252.5,40 1336,40 1336,49 250,49',
-  '234.5,58 1336,58 1336,67 232,67',
-];
-type Geo = { slices: string[]; vb: [number, number, number, number]; grad: [number, number, number, number]; k: number };
-const GEO: Record<'e' | 'short', Geo> = {
-  e: { slices: SLICES, vb: [138, 39, 198, 114.4], grad: [138, 9.3, 336, 193], k: 1 },
-  // k scales every travel distance (light, depth) to the smaller drawing
-  short: { slices: SHORT_SLICES, vb: [232, 22, 104, 45], grad: [228, -1.55, 345, 97.4], k: 104 / 198 },
-};
 // 404 scatter: offset (user units) and tilt (deg) of each layer when fully scattered; pivot near its visible left end
 const SCATTER = [{ x: -26, y: -16, r: -7, cy: 56 }, { x: 22, y: 8, r: 5, cy: 96 }, { x: -12, y: 24, r: -4, cy: 136 }];
 type Mode = 'split' | 'assemble' | 'enter' | 'scatter';
 export const FOIL_STOPS: [string, string][] = [['0', '#BFE3FF'], ['0.2', '#E2FFF4'], ['0.4', '#8FC9FF'], ['0.58', '#7FF5D0'], ['0.78', '#E4FBFF'], ['1', '#A8F0E0']];
 
-export function FoilBars({ className = '', mode = 'split', variant = 'e' }: { className?: string; mode?: Mode; variant?: 'e' | 'short' }) {
+export function FoilBars({ className = '', mode = 'split' }: { className?: string; mode?: Mode }) {
   const id = useId().replace(/[^a-zA-Z0-9]/g, '');
-  const geo = GEO[variant];
-  const [vx, vy, vw, vh] = geo.vb;
   const svg = useRef<SVGSVGElement>(null);
 
   useEffect(() => {
@@ -81,16 +63,15 @@ export function FoilBars({ className = '', mode = 'split', variant = 'e' }: { cl
     const draw = () => {
       raf = 0;
       p.c += (p.t - p.c) * (mode === 'enter' ? 0.075 : 0.16);
-      const sc = geo.k;
-      foil.setAttribute('gradientTransform', `translate(${(((light.x - 0.5) * 160 + p.c * 120) * sc).toFixed(2)} ${((light.y - 0.5) * 50 * sc).toFixed(2)})`);
-      const r = el.getBoundingClientRect(); const k = vw / Math.max(1, r.width);
-      const sx = vx + (light.x * window.innerWidth - r.left) * k; const sy = vy + (light.y * window.innerHeight - r.top) * k;
-      sheen.setAttribute('cx', Math.max(vx - 28 * sc, Math.min(vx + vw + 44 * sc, sx)).toFixed(1)); sheen.setAttribute('cy', Math.max(vy - 19 * sc, Math.min(vy + vh + 22 * sc, sy)).toFixed(1));
+      foil.setAttribute('gradientTransform', `translate(${((light.x - 0.5) * 160 + p.c * 120).toFixed(2)} ${((light.y - 0.5) * 50).toFixed(2)})`);
+      const r = el.getBoundingClientRect(); const k = 198 / Math.max(1, r.width);
+      const sx = 138 + (light.x * window.innerWidth - r.left) * k; const sy = 39 + (light.y * window.innerHeight - r.top) * k;
+      sheen.setAttribute('cx', Math.max(110, Math.min(380, sx)).toFixed(1)); sheen.setAttribute('cy', Math.max(20, Math.min(175, sy)).toFixed(1));
       layers.forEach((g, i) => {
         if (mode === 'scatter') {
           const s = SCATTER[i]; const k = p.c;
           g.setAttribute('transform', `translate(${(s.x * k).toFixed(2)} ${(s.y * k).toFixed(2)}) rotate(${(s.r * k).toFixed(2)} 190 ${s.cy})`);
-        } else g.setAttribute('transform', `translate(${(p.c * DEPTH[i] * spread * geo.k).toFixed(2)} 0)`);
+        } else g.setAttribute('transform', `translate(${(p.c * DEPTH[i] * spread).toFixed(2)} 0)`);
       });
       if (Math.abs(p.t - p.c) > 0.0008 && visible) raf = requestAnimationFrame(draw);
     };
@@ -102,21 +83,21 @@ export function FoilBars({ className = '', mode = 'split', variant = 'e' }: { cl
     io.observe(el);
     p.t = progress(); p.c = mode === 'enter' || mode === 'scatter' ? 1 : p.t; kick();
     return () => { cancelAnimationFrame(raf); io.disconnect(); off(); window.removeEventListener('scroll', onScroll); };
-  }, [id, mode, geo, vx, vy, vw, vh]);
+  }, [id, mode]);
 
   return (
-    <svg ref={svg} viewBox={geo.vb.join(' ')} className={`foil-bars foil-bars--${variant} ${className}`} aria-hidden focusable="false">
+    <svg ref={svg} viewBox="138 39 198 114.4" className={`foil-bars ${className}`} aria-hidden focusable="false">
       <defs>
-        <linearGradient id={`f${id}`} gradientUnits="userSpaceOnUse" x1={geo.grad[0]} y1={geo.grad[1]} x2={geo.grad[2]} y2={geo.grad[3]} spreadMethod="reflect">
+        <linearGradient id={`f${id}`} gradientUnits="userSpaceOnUse" x1="138" y1="9.3" x2="336" y2="193" spreadMethod="reflect">
           {FOIL_STOPS.map(([o, c]) => <stop key={o} offset={o} stopColor={c} />)}
         </linearGradient>
-        <radialGradient id={`s${id}`} gradientUnits="userSpaceOnUse" cx={vx + vw * 0.52} cy={vy + vh * 0.18} r={78 * geo.k}>
+        <radialGradient id={`s${id}`} gradientUnits="userSpaceOnUse" cx="240" cy="60" r="78">
           <stop offset="0" stopColor="#FFFFFF" stopOpacity="0.55" />
           <stop offset="0.45" stopColor="#FFFFFF" stopOpacity="0.16" />
           <stop offset="1" stopColor="#FFFFFF" stopOpacity="0" />
         </radialGradient>
       </defs>
-      {geo.slices.map((pts, i) => (
+      {SLICES.map((pts, i) => (
         <g key={i} data-layer={i}>
           <polygon points={pts} fill={`url(#f${id})`} />
           <polygon points={pts} fill={`url(#s${id})`} />

@@ -30,7 +30,7 @@ export default function AboutPage() {
   return (
     <>
       <section className="hero" aria-labelledby="about-hero">
-        <FoilBars variant="short" className="hero-bars hero-bars--page" />
+        <FoilBars className="hero-bars hero-bars--page" />
         <div className="container-x pt-[calc(72px+var(--space-10))] pb-[var(--space-9)]">
           <p className="t-label muted hero-after" style={d(0)}>About</p>
           <RiseText as="h1" on="load" id="about-hero" className="t-h1 mt-8" style={{ maxWidth: '16ch' }}

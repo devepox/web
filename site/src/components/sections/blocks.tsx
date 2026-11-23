@@ -1,65 +1,10 @@
 import Link from 'next/link';
-import { ArrowRight, Plus } from 'lucide-react';
-import type { CSSProperties, ReactNode } from 'react';
-import { ArrowLink, FactTable, Label, Live, ServiceIcon, Tags, Val } from '@/components/ui/primitives';
+import { Plus } from 'lucide-react';
+import type { ReactNode } from 'react';
+import { ArrowLink, AssetPlaceholder, FactTable, Label, Live, Tags, Val } from '@/components/ui/primitives';
 import type { CaseStudy, Service } from '@/lib/content';
-import { findings, models, steps, trust } from '@/lib/content';
-import { CaseCover } from './CaseCover';
+import { models, steps, trust } from '@/lib/content';
 import { StackList } from './StackList';
-
-/* ------------------------------------------------ Service cards (brand ServiceCard: icon tile, title, one sentence, link) */
-/** Home services. 4 columns on desktop; the 8th tile carries the "also" line and the link to every service.
- *  Phones: compact rows (icon beside the text), the whole card is the link. */
-export function ServiceCards({ items, also }: { items: Service[]; also?: string[] }) {
-  return (
-    <ul className="svc-cards">
-      {items.map((s, i) => (
-        <li key={s.slug} data-reveal style={{ '--i': i % 4 } as CSSProperties}>
-          <Link href={`/services/${s.slug}`} className="svc-card">
-            <ServiceIcon slug={s.slug} />
-            <span className="svc-card-title">{s.title}</span>
-            <span className="svc-card-text">{s.promise}</span>
-            <span className="svc-card-link arrow-link" aria-hidden><span>Learn more</span><ArrowRight className="icon" strokeWidth={1.9} /></span>
-          </Link>
-        </li>
-      ))}
-      {also && (
-        <li className="svc-card svc-card--also" data-reveal style={{ '--i': 3 } as CSSProperties}>
-          <span className="t-label muted">Also</span>
-          <span className="svc-card-text">{also.join(' · ')}</span>
-          <span className="svc-card-link"><ArrowLink href="/services">All services</ArrowLink></span>
-        </li>
-      )}
-    </ul>
-  );
-}
-
-/* ------------------------------------------------ What we found (home): problem → fix → result, one row per case */
-export function Findings() {
-  return (
-    <ol className="found-list">
-      {findings.map((f, i) => (
-        <li key={f.slug} className="found-row" data-reveal style={{ '--i': i } as CSSProperties}>
-          <div className="found-case">
-            <p className="t-label muted">Case {f.n}</p>
-            <p className="mt-2 t-small">{f.sector}</p>
-          </div>
-          <div className="found-main">
-            <p className="t-label muted found-tag"><span className="found-mark" aria-hidden />We found</p>
-            <p className="found-text mt-4">{f.found}</p>
-          </div>
-          <div className="found-side">
-            <p className="t-label muted">We built</p>
-            <p className="mt-3">{f.built}</p>
-            <p className="t-label muted mt-8">Result</p>
-            <p className="mt-3"><Val v={f.result} /></p>
-            <div className="mt-6"><ArrowLink href={`/work/${f.slug}`}>Read the case</ArrowLink></div>
-          </div>
-        </li>
-      ))}
-    </ol>
-  );
-}
 
 /* ------------------------------------------------ Numbered service rows (H7 stacking on desktop) */
 export function ServiceRows({ items, stacking = false }: { items: Service[]; stacking?: boolean }) {
@@ -87,7 +32,7 @@ export function CaseCard({ c, size = 'lg', headingAs: H = 'h3' }: { c: CaseStudy
   return (
     <article className={`case-card group grid rounded-[var(--r-card)] bg-card p-[var(--r-card-pad)] ${size === 'lg' ? 'lg:grid-cols-[1.15fr_1fr]' : ''}`} data-reveal>
       <Link href={`/work/${c.slug}`} className="media-hover block" tabIndex={-1} aria-hidden data-unveil>
-        <CaseCover c={c} ratio="16 / 10" />
+        <AssetPlaceholder name={c.asset} ratio="16 / 10" />
       </Link>
       <div className="flex flex-col p-6 md:p-10">
         <Label>Case {c.n} · {c.sector}{c.region ? ` · ${c.region}` : ''}</Label>
@@ -123,14 +68,13 @@ export function EngagementModels() {
   return (
     <ol className="grid gap-[var(--gutter)] md:grid-cols-3">
       {models.map((m, i) => (
-        <li key={m.n} className="card-o flex flex-col rounded-[var(--r-card)] p-6 sm:p-8" data-reveal style={{ '--i': i } as React.CSSProperties}>
+        <li key={m.n} className="card-o flex flex-col rounded-[var(--r-card)] p-8" data-reveal style={{ '--i': i } as React.CSSProperties}>
           <h3 className="t-h3">{m.title}</h3>
           <p className="mt-3 muted">Best for: {m.best}</p>
-          {/* phones: the points are hidden (the full comparison is on /how-we-work), so the page stays short */}
-          <ul className="mt-8 hidden gap-3 border-t border-line pt-6 sm:grid">
+          <ul className="mt-8 grid gap-3 border-t border-line pt-6">
             {m.points.map(p => <li key={p} className="t-small flex gap-3"><span aria-hidden className="mt-[0.6em] h-px w-3 flex-none bg-current opacity-50" />{p}</li>)}
           </ul>
-          <div className="mt-auto pt-6 sm:pt-10"><ArrowLink href="/contact">Let&apos;s talk</ArrowLink></div>
+          <div className="mt-auto pt-10"><ArrowLink href="/contact">Let&apos;s talk</ArrowLink></div>
         </li>
       ))}
     </ol>

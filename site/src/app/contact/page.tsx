@@ -23,7 +23,7 @@ const d = (ms: number) => ({ '--d': `${ms}ms` }) as CSSProperties;
 export default function ContactPage() {
   return (
     <section aria-labelledby="contact-hero" className="hero pb-[var(--section-y)]">
-      <FoilBars variant="short" className="hero-bars hero-bars--page" />
+      <FoilBars className="hero-bars hero-bars--page" />
       <div className="container-x pt-[calc(72px+var(--space-10))]">
         <p className="t-label muted hero-after" style={d(0)}>Contact</p>
         <RiseText as="h1" on="load" id="contact-hero" className="t-h1 mt-8" style={{ maxWidth: '15ch' }}

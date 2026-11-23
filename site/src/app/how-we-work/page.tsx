@@ -31,7 +31,7 @@ export default function HowWeWorkPage() {
   return (
     <>
       <section className="hero" aria-labelledby="hww-hero">
-        <FoilBars variant="short" className="hero-bars hero-bars--page" />
+        <FoilBars className="hero-bars hero-bars--page" />
         <div className="container-x pt-[calc(72px+var(--space-10))] pb-[var(--space-9)]">
           <p className="t-label muted hero-after" style={d(0)}>How we work</p>
           <RiseText as="h1" on="load" id="hww-hero" className="t-h1 mt-8" style={{ maxWidth: '15ch' }}
@@ -43,7 +43,7 @@ export default function HowWeWorkPage() {
       </section>
 
       {/* ways to work: comparison (table on desktop, cards on mobile) */}
-      <section className="section" aria-labelledby="models-title">
+      <section className="section soft" aria-labelledby="models-title">
         <div className="container-x">
           <SectionHeader id="models-title" label="Ways to work" title="Three ways to work with us" />
 
@@ -130,7 +130,7 @@ export default function HowWeWorkPage() {
       {/* FAQ */}
       <section className="section" aria-labelledby="faq-title">
         <div className="container-x">
-          <SectionHeader id="faq-title" layout="split" label="FAQ" title="Questions we hear first" intro="Something not covered here? Ask, and a person who builds software will answer." action={<ArrowLink href="#contact">Ask a question</ArrowLink>} />
+          <SectionHeader id="faq-title" label="FAQ" title="Questions we hear first" />
           <Faq items={[
             { q: 'Do you work under NDA?', a: 'Yes. We can sign yours or send ours before you share anything.' },
             { q: 'Who owns the code?', a: <>You do. <Ph>[PLACEHOLDER: confirm ownership and handover terms]</Ph></> },
