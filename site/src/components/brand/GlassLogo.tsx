@@ -50,9 +50,17 @@ function studio(renderer: THREE.WebGLRenderer) {
  */
 type Letter = { geo: THREE.BufferGeometry; rest: THREE.Vector3 };
 const EXTRUDE = { depth: 70, curveSegments: 12, bevelEnabled: true, bevelThickness: 16, bevelSize: 9, bevelSegments: 5 };
+/**
+ * One letter: extruded, then turned upright. SVG y points down, so y is mirrored; z is mirrored with it, which makes it
+ * a 180° turn instead of a mirror and keeps the triangles' winding. Mirroring y alone flipped every face inside out:
+ * the glass showed its back faces (black edges round each letter, a black slit through the "e").
+ */
+function letterGeometry(s: THREE.Shape) {
+  const g = new THREE.ExtrudeGeometry(s, EXTRUDE); g.scale(1, -1, -1); g.computeBoundingBox(); return g;
+}
 function wordmark() {
   const shapes = new SVGLoader().parse(`<svg xmlns="http://www.w3.org/2000/svg"><path d="${WORDMARK_PATH}"/></svg>`).paths.flatMap(p => SVGLoader.createShapes(p));
-  return wordmarkFrom(shapes.map(s => { const g = new THREE.ExtrudeGeometry(s, EXTRUDE); g.scale(1, -1, 1); g.computeBoundingBox(); return g; }));
+  return wordmarkFrom(shapes.map(letterGeometry));
 }
 function wordmarkFrom(geos: THREE.BufferGeometry[]) {
   const word = new THREE.Box3(); geos.forEach(g => word.union(g.boundingBox!));
@@ -77,7 +85,7 @@ export function prepareGlass(): Promise<void> {
   return new Promise(resolve => {
     const next = () => whenIdle(() => {
       const s = shapes[geos.length];
-      if (s) { const g = new THREE.ExtrudeGeometry(s, EXTRUDE); g.scale(1, -1, 1); g.computeBoundingBox(); geos.push(g); next(); return; }
+      if (s) { geos.push(letterGeometry(s)); next(); return; }
       prepared = wordmarkFrom(geos); resolve();
     });
     next();
@@ -284,7 +292,7 @@ function Scene({ onFirstFrame }: { onFirstFrame: () => void }) {
     const wordW = mark.box.max.x - mark.box.min.x;
 
     const s = story.current; const a = anchor.current;
-    if (s.catching) { s.c += (s.p - s.c) * (1 - Math.exp(-dt * 4)); if (Math.abs(s.p - s.c) < 0.003) s.catching = false; } else s.c = s.p;
+    if (s.catching) { s.c += (s.p - s.c) * (1 - Math.exp(-dt * 4)); if (Math.abs(s.p - s.c) < 0.003) s.catching = false; else state.invalidate(); } else s.c = s.p;
     if (!s.on || !a) {
       // the normal hero logo (no story): word in front of its bars, camera at rest
       sb.visible = false; if (st && sbot && hz) { st.visible = false; sbot.visible = false; hz.visible = false; }
@@ -411,16 +419,51 @@ function Scene({ onFirstFrame }: { onFirstFrame: () => void }) {
   );
 }
 
+/**
+ * Frame pacing (the canvas runs frameloop="demand"): full rate while something moves (cursor, scroll story, resize)
+ * and for BUSY_MS after, so the tilt and catch-up easing settle; 30 fps while idle, when only the slow sway moves.
+ * The scene used to render every display frame while on screen (60–120 fps, glass transmission pass included),
+ * even with nothing changing.
+ */
+const BUSY_MS = 1500, IDLE_FPS = 30;
+function Pacer({ active }: { active: boolean }) {
+  const invalidate = useThree(s => s.invalidate);
+  const busyUntil = useRef(0);
+  // busy: every rendered frame asks for the next one from inside the frame, which keeps R3F's loop running at the
+  // display rate like frameloop="always" (an invalidate() from outside a frame only gets every other frame drawn)
+  useFrame(state => { if (performance.now() < busyUntil.current) state.invalidate(); });
+  useEffect(() => {
+    if (!active) return;
+    let raf = 0; let last = 0;
+    const kick = () => {
+      const wasIdle = performance.now() >= busyUntil.current;
+      busyUntil.current = performance.now() + BUSY_MS;
+      if (wasIdle) invalidate();
+    };
+    // idle: one frame every 1/IDLE_FPS s for the sway
+    const loop = (t: number) => {
+      raf = requestAnimationFrame(loop);
+      if (t >= busyUntil.current && t - last >= 1000 / IDLE_FPS - 2) { last = t; invalidate(); }
+    };
+    const offLight = onLight(kick); const offStory = onStory(kick); const offAnchor = onAnchor(kick);
+    window.addEventListener('resize', kick);
+    kick(); raf = requestAnimationFrame(loop);
+    return () => { cancelAnimationFrame(raf); offLight(); offStory(); offAnchor(); window.removeEventListener('resize', kick); };
+  }, [active, invalidate]);
+  return null;
+}
+
 export default function GlassLogo({ onReady, active }: { onReady: () => void; active: boolean }) {
   return (
     <Canvas
       className="glass-logo"
-      frameloop={active ? 'always' : 'never'}
+      frameloop={active ? 'demand' : 'never'}
       dpr={[1, 1.5]}
       camera={{ fov: 28, near: 1, far: 10000, position: [0, 0, REST_Z] }}
       gl={{ antialias: true, powerPreference: 'high-performance', toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.15, outputColorSpace: THREE.SRGBColorSpace }}
       aria-hidden
     >
+      <Pacer active={active} />
       <Scene onFirstFrame={onReady} />
     </Canvas>
   );
