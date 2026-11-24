@@ -34,9 +34,9 @@ export function Footer() {
             <p className="t-label muted">Contact</p>
             <ul className="mt-5 grid gap-2">
               {company.email && <li><a className="link-quiet" href={`mailto:${company.email}`}>{company.email}</a></li>}
-              {company.whatsapp && <li><a className="link-quiet" href={`https://wa.me/${company.whatsapp.replace(/\D/g, '')}`}>{company.whatsapp}</a></li>}
+              {company.phone && <li><a className="link-quiet t-num" href={company.phoneHref}>{company.phone}</a> <span className="muted">· </span><a className="link-quiet" href={company.whatsappHref}>WhatsApp</a></li>}
               <li><Link className="link-quiet" href="/contact">Send us a message</Link></li>
-              <li className="muted">{company.city}, {company.country} · {company.timezone}</li>
+              <li className="muted">{company.street && <>{company.street},<br /></>}{company.city}, {company.country} · {company.timezone}</li>
             </ul>
           </div>
         </div>

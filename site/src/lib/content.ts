@@ -8,8 +8,15 @@ export const company = {
   founded: 2019,
   timezone: 'UTC+5',
   // Empty = not shown anywhere (the contact form is the way in). Fill these and every page links them.
-  email: '',
-  whatsapp: '',
+  email: 'info@epox.systems',
+  /** one number for calls and WhatsApp (owner, 2026-11-22): local 0308 2982001 */
+  phone: '+92 308 2982001',
+  phoneHref: 'tel:+923082982001',
+  whatsappHref: 'https://wa.me/923082982001',
+  /** street address (owner, 2026-11-22) */
+  street: 'St#6, Zia Town, Canal Road',
+  address: 'St#6, Zia Town, Canal Road, Faisalabad, Pakistan',
+  mapsUrl: 'https://www.google.com/maps/search/?api=1&query=St%236%2C%20Zia%20Town%2C%20Canal%20Road%2C%20Faisalabad',
   bookingUrl: '',
 };
 

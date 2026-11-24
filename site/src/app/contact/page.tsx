@@ -45,10 +45,14 @@ export default function ContactPage() {
 
             <dl className="mt-12 grid gap-5">
               {/* direct contacts appear once they're filled in lib/content.ts → company */}
-              {company.bookingUrl && <div><dt className="t-label muted">Prefer a call?</dt><dd className="mt-1.5"><a className="link" href={company.bookingUrl}>Book 20 minutes</a></dd></div>}
+              {company.phone && <div><dt className="t-label muted">Call or WhatsApp</dt>
+                <dd className="mt-1.5 flex flex-wrap gap-x-4 gap-y-1"><a className="link t-num" href={company.phoneHref}>{company.phone}</a><a className="link" href={company.whatsappHref}>Message on WhatsApp</a></dd></div>}
               {company.email && <div><dt className="t-label muted">Email</dt><dd className="mt-1.5"><a className="link" href={`mailto:${company.email}`}>{company.email}</a></dd></div>}
-              {company.whatsapp && <div><dt className="t-label muted">WhatsApp</dt><dd className="mt-1.5"><a className="link" href={`https://wa.me/${company.whatsapp.replace(/\D/g, '')}`}>{company.whatsapp}</a></dd></div>}
-              <div><dt className="t-label muted">Where</dt><dd className="mt-1.5">{company.city}, {company.country} · {company.timezone}</dd></div>
+              {company.bookingUrl && <div><dt className="t-label muted">Book a call</dt><dd className="mt-1.5"><a className="link" href={company.bookingUrl}>Book 20 minutes</a></dd></div>}
+              <div><dt className="t-label muted">Where</dt>
+                <dd className="mt-1.5">{company.street
+                  ? <><a className="link" href={company.mapsUrl} target="_blank" rel="noopener noreferrer">{company.street}, {company.city}</a><span className="muted"> · {company.country} · {company.timezone}</span></>
+                  : <>{company.city}, {company.country} · {company.timezone}</>}</dd></div>
             </dl>
           </div>
         </div>

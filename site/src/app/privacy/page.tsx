@@ -15,7 +15,7 @@ const sections: { h: string; body: React.ReactNode }[] = [
   { h: 'Who handles it', body: <>The form is delivered to our inbox by Resend, an email service. The site is hosted on Vercel, which keeps short-lived technical logs (such as IP addresses) to run and protect the site. Both act on our behalf.</> },
   { h: 'How long we keep it', body: <>For as long as we&apos;re talking about a project with you, then for 24 months, unless you ask us to delete it sooner.</> },
   { h: 'Your choices', body: <>You can ask what we hold about you, ask us to correct it, or ask us to delete it. {company.email ? <>Write to <a className="link" href={`mailto:${company.email}`}>{company.email}</a></> : <>Send us a message through the <Link href="/contact" className="link">contact form</Link></>} and we&apos;ll answer within 30 days.</> },
-  { h: 'Who we are', body: <>epox, a software house in {company.city}, {company.country}, working since {company.founded}.</> },
+  { h: 'Who we are', body: <>epox, a software house {company.street ? <>at {company.address}</> : <>in {company.city}, {company.country}</>}, working since {company.founded}.{company.phone && <> Phone and WhatsApp <a className="link t-num" href={company.phoneHref}>{company.phone}</a>.</>}</> },
 ];
 
 /** /privacy (design brief §6): plain text page. Defaults (24 months, 30 days) written 2026-11-23; owner / legal review still advised. */

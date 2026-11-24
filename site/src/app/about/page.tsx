@@ -82,6 +82,10 @@ export default function AboutPage() {
               <p className="t-lead" style={{ maxWidth: '40ch' }}>
                 We work with clients wherever they are. The rental app in our work runs for tenants and landlords across Europe.
               </p>
+              {company.street && <address className="mt-8 not-italic muted">
+                <a className="link text-text" href={company.mapsUrl} target="_blank" rel="noopener noreferrer">{company.street}, {company.city}</a>
+                {company.phone && <span className="block mt-1">Call or WhatsApp <a className="link t-num text-text" href={company.phoneHref}>{company.phone}</a></span>}
+              </address>}
               <div className="mt-8"><ArrowLink href="/how-we-work">How we work together</ArrowLink></div>
             </div>
           </div>

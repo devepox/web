@@ -25,10 +25,16 @@ export function ContactBlock() {
                 </li>
               ))}
             </ol>
-            {company.bookingUrl && <p className="mt-10 t-small muted">Prefer a call? <a className="link" href={company.bookingUrl}>Book 20 minutes</a></p>}
+            {company.phone
+              ? <p className="mt-10 t-small muted">
+                  Prefer a call? <a className="link t-num text-text" href={company.phoneHref}>{company.phone}</a>, also on <a className="link text-text" href={company.whatsappHref}>WhatsApp</a>.
+                  {company.bookingUrl && <> Or <a className="link text-text" href={company.bookingUrl}>book 20 minutes</a>.</>}
+                </p>
+              : company.bookingUrl && <p className="mt-10 t-small muted">Prefer a call? <a className="link" href={company.bookingUrl}>Book 20 minutes</a></p>}
           </div>
           <div className="lg:col-span-6 lg:col-start-7">
-            <ContactForm />
+            {/* not the accent button: the page's hero already has the one main action */}
+            <ContactForm accent={false} />
           </div>
         </div>
       </div>
