@@ -120,6 +120,8 @@
   html.js:not([data-motion="reduced"]) [data-reveal]:not([data-in]) { opacity: 0; transform: translateY(var(--rise)); }
   html.js:not([data-motion="reduced"]) [data-rise]:not([data-in]) .rw > span { transform: translateY(110%); }
   html.js:not([data-motion="reduced"]) [data-unveil]:not([data-in]) { clip-path: polygon(0 0, 0% 0, -17% 100%, 0 100%); }
+  /* stat counters: hidden until their count starts (components/sections/interactive.tsx), so the final value never flashes first */
+  html.js:not([data-motion="reduced"]) .count-up:not([data-ready]) { opacity: 0; }
 
   /* page enter (H2, template.tsx) */
   .page-enter { animation: page-enter 600ms var(--ease-out-quint) both; }

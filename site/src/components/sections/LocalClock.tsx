@@ -11,9 +11,9 @@ const TZ = 'Asia/Karachi'; // Faisalabad, UTC+5 (no daylight saving)
 export function LocalClock() {
   const [now, setNow] = useState<Date | null>(null);
   useEffect(() => {
-    setNow(new Date());
+    const first = window.setTimeout(() => setNow(new Date()), 0);
     const t = window.setInterval(() => setNow(new Date()), 20_000);
-    return () => window.clearInterval(t);
+    return () => { window.clearTimeout(first); window.clearInterval(t); };
   }, []);
 
   const time = now ? new Intl.DateTimeFormat('en-GB', { timeZone: TZ, hour: '2-digit', minute: '2-digit' }).format(now) : '--:--';

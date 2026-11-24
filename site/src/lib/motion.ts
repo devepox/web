@@ -5,6 +5,15 @@ import type Lenis from 'lenis';
 type GsapBundle = { gsap: typeof import('gsap').gsap; ScrollTrigger: typeof import('gsap/ScrollTrigger').ScrollTrigger };
 let gsapPromise: Promise<GsapBundle> | null = null;
 let lenis: Lenis | null = null;
+let lenisPromise: Promise<Lenis> | null = null;
+let linked = false;
+
+/** Feeds Lenis scroll events to ScrollTrigger, once, whichever of the two finishes loading last. */
+const linkScrollTrigger = (st: GsapBundle['ScrollTrigger']) => {
+  if (linked || !lenis) return;
+  linked = true;
+  lenis.on('scroll', st.update);
+};
 
 export const prefersReducedMotion = () =>
   typeof document !== 'undefined' && document.documentElement.dataset.motion === 'reduced';
@@ -51,7 +60,7 @@ export function loadGsap(): Promise<GsapBundle> {
   if (!gsapPromise) {
     gsapPromise = Promise.all([import('gsap'), import('gsap/ScrollTrigger')]).then(([g, st]) => {
       g.gsap.registerPlugin(st.ScrollTrigger);
-      if (lenis) lenis.on('scroll', st.ScrollTrigger.update);
+      linkScrollTrigger(st.ScrollTrigger);
       return { gsap: g.gsap, ScrollTrigger: st.ScrollTrigger };
     });
   }
@@ -61,12 +70,16 @@ export function loadGsap(): Promise<GsapBundle> {
 export async function startLenis() {
   // touch devices get Lenis only for the story's speed limit (syncTouch stays off outside it: native scroll)
   if (lenis || prefersReducedMotion() || !(canSmoothScroll() || (isTouchDevice() && document.documentElement.dataset.story === 'on'))) return lenis;
-  const { default: LenisCtor } = await import('lenis');
-  lenis = new LenisCtor({ lerp: 0.1, smoothWheel: true, anchors: true, syncTouch: false, syncTouchLerp: 0.08, virtualScroll: storyGovernor });
-  const raf = (t: number) => { lenis?.raf(t); requestAnimationFrame(raf); };
-  requestAnimationFrame(raf);
-  if (gsapPromise) gsapPromise.then(({ ScrollTrigger }) => lenis?.on('scroll', ScrollTrigger.update));
-  return lenis;
+  // one startup promise, so overlapping calls (dev StrictMode) share one instance and one rAF loop
+  lenisPromise ??= import('lenis').then(({ default: LenisCtor }) => {
+    const l = new LenisCtor({ lerp: 0.1, smoothWheel: true, anchors: true, syncTouch: false, syncTouchLerp: 0.08, virtualScroll: storyGovernor });
+    lenis = l;
+    const raf = (t: number) => { l.raf(t); requestAnimationFrame(raf); };
+    requestAnimationFrame(raf);
+    if (gsapPromise) gsapPromise.then(({ ScrollTrigger }) => linkScrollTrigger(ScrollTrigger));
+    return l;
+  });
+  return lenisPromise;
 }
 
 export const getLenis = () => lenis;

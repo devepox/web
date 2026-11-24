@@ -24,11 +24,16 @@ const company = [
  * Black by default, light over Paper bands (.soft / .paper). The header carries data-theme, so tokens do the rest.
  */
 export function Header() {
+  // React Compiler skips this component today (it reads refs during render). If it ever compiles it, the hook order
+  // changes on re-render and every page crashes on the first scroll (React error #311), so it stays opted out.
+  'use no memo';
   const pathname = usePathname();
   const [panel, setPanel] = useState<Panel>(null);
   const [svc, setSvc] = useState(0); // service previewed in the mega-menu
   const [sheet, setSheet] = useState(false);
   const [sheetTone, setSheetTone] = useState(false); // lags the close by half the 900 ms sweep so the logo flips as the panel leaves
+  // Not a render-phase setState: with React Compiler that pattern crashes (React error #311) on the first re-render.
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { if (sheet) { setSheetTone(true); return; } const t = window.setTimeout(() => setSheetTone(false), 450); return () => window.clearTimeout(t); }, [sheet]);
   const [stuck, setStuck] = useState(false);
   const [hidden, setHidden] = useState(false);
@@ -38,12 +43,15 @@ export function Header() {
   const readRef = useRef<HTMLDivElement>(null);
   const reading = pathname !== '/' && pathname !== '/contact'; // long pages only
   const workRef = useRef<HTMLAnchorElement>(null);
-  const panelRefs = { services: useRef<HTMLDivElement>(null), company: useRef<HTMLDivElement>(null) };
+  const servicesPanelRef = useRef<HTMLDivElement>(null);
+  const companyPanelRef = useRef<HTMLDivElement>(null);
+  const panelRefs = { services: servicesPanelRef, company: companyPanelRef };
   const triggerRefs = { services: useRef<HTMLButtonElement>(null), company: useRef<HTMLButtonElement>(null) };
   const closeTimer = useRef<number>(0);
   const lastY = useRef(0);
 
   // close menus on navigation
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { setPanel(null); setSheet(false); }, [pathname]);
 
   // stuck / hide on scroll / tone from the section under the header
@@ -111,7 +119,7 @@ export function Header() {
           {(['services', 'company'] as const).map(p => (
             <button key={p} ref={triggerRefs[p]} type="button" className="nav-link" aria-expanded={panel === p} aria-controls="mega"
               onMouseEnter={() => open(p)} onFocus={() => open(p)}
-              onClick={() => setPanel(panel === p ? null : p)}
+              onClick={() => open(p)}
               onKeyDown={(e) => {
                 // Tab / ArrowDown on an open trigger moves into its panel
                 if ((e.key === 'ArrowDown' || (e.key === 'Tab' && !e.shiftKey)) && panel === p) {
@@ -139,7 +147,7 @@ export function Header() {
               }
             }}>
             {/* Services: a typographic index (foil bar marks the active area) + the area's big foil number and promise */}
-            <div ref={panelRefs.services} className="mega-panel w-[760px]" data-active={panel === 'services'} aria-hidden={panel !== 'services'}>
+            <div ref={servicesPanelRef} className="mega-panel w-[760px]" data-active={panel === 'services'} aria-hidden={panel !== 'services'}>
               <div className="grid grid-cols-[minmax(300px,1fr)_340px] gap-6">
                 <div className="mega-index py-2" style={{ '--row': svc, '--row-h': '46px' } as CSSProperties}>
                   <span className="mega-marker" aria-hidden />
@@ -164,7 +172,7 @@ export function Header() {
                 </div>
               </div>
             </div>
-            <div ref={panelRefs.company} className="mega-panel w-[420px]" data-active={panel === 'company'} aria-hidden={panel !== 'company'}>
+            <div ref={companyPanelRef} className="mega-panel w-[420px]" data-active={panel === 'company'} aria-hidden={panel !== 'company'}>
               <ul className="grid gap-1">
                 {company.map(c => (
                   <li key={c.href}>
@@ -188,8 +196,10 @@ export function Header() {
       </div>
 
     </header>
-      {/* mobile menu: sits outside <header> so the header's backdrop-filter can't clip it; header is z-50 above it */}
-      <div id="sheet" className="sheet lg:hidden" data-theme="dark" data-open={sheet} aria-hidden={!sheet} role="dialog" aria-modal="true" aria-label="Menu">
+      {/* mobile menu: sits outside <header> so the header's backdrop-filter can't clip it; header is z-50 above it.
+          data-lenis-prevent: Lenis is stopped while the menu is open and swallows wheel events, so on a short window
+          with a mouse or trackpad (narrow laptop, tablet with trackpad) the menu's lower links could not be scrolled to */}
+      <div id="sheet" className="sheet lg:hidden" data-lenis-prevent data-theme="dark" data-open={sheet} aria-hidden={!sheet} role="dialog" aria-modal="true" aria-label="Menu">
         <div className="container-x flex flex-1 flex-col pt-24 pb-8">
           <p className="t-label sheet-in" style={{ '--i': 0 } as CSSProperties}>Services</p>
           <ul className="mt-4 grid gap-1">

@@ -2,8 +2,8 @@
 // Settings (Vercel → Project → Settings → Environment Variables, or site/.env.local for local runs):
 //   RESEND_API_KEY   required. From resend.com → API Keys.
 //   CONTACT_TO       required. Inbox that receives messages (comma-separate several).
-//   CONTACT_FROM     optional. Verified sender, e.g. "epox website <hello@your-domain>".
-//                    Default uses Resend's test sender, which can only deliver to the Resend account's own email.
+//   CONTACT_FROM     required. Sender on a domain verified in Resend, e.g. "epox website <noreply@epox.systems>".
+//                    Resend's test sender (onboarding@resend.dev) only delivers to the Resend account's own email, so there is no fallback.
 // Spam: honeypot field + minimum fill time. Bots get a fake success so they don't retry.
 
 const TOPICS = ['New project', 'Existing product', 'Dedicated developers', 'Other'];
@@ -16,8 +16,13 @@ export async function POST(req: Request) {
   const data = await req.json().catch(() => null) as Record<string, unknown> | null;
   if (!data || typeof data !== 'object') return Response.json({ error: 'Invalid request.' }, { status: 400 });
 
-  // bots: honeypot filled, or submitted faster than a person can type
-  if (clean(data.website, 200) || Number(data.elapsed ?? 0) < MIN_FILL_MS) return Response.json({ ok: true });
+  // bots: honeypot filled → fake success so they don't retry
+  if (clean(data.website, 200)) return Response.json({ ok: true });
+  // submitted faster than a person can type (or no usable timing): tell the sender so a real person can simply resend
+  const elapsed = Number(data.elapsed);
+  if (!Number.isFinite(elapsed) || elapsed < MIN_FILL_MS) {
+    return Response.json({ error: 'That was very quick. Please check your message and send it again.' }, { status: 429 });
+  }
 
   const name = clean(data.name, 120);
   const email = clean(data.email, 200);
@@ -30,12 +35,14 @@ export async function POST(req: Request) {
 
   const key = process.env.RESEND_API_KEY;
   const to = process.env.CONTACT_TO?.split(',').map(s => s.trim()).filter(Boolean);
-  if (!key || !to?.length) {
-    console.error('[contact] RESEND_API_KEY or CONTACT_TO is not set; message not sent.');
+  const from = process.env.CONTACT_FROM;
+  if (!key || !to?.length || !from) {
+    console.error('[contact] RESEND_API_KEY, CONTACT_TO or CONTACT_FROM is not set; message not sent.');
     return Response.json({ error: 'Our form isn\'t connected yet, so this message wasn\'t sent. Please try again soon.' }, { status: 503 });
   }
 
-  const subject = `Website: ${topic} · ${name}${company ? ` (${company})` : ''}`;
+  const oneLine = (s: string) => s.replace(/[\r\n]+/g, ' ');
+  const subject = `Website: ${topic} · ${oneLine(name)}${company ? ` (${oneLine(company)})` : ''}`;
   const rows: [string, string][] = [['Topic', topic], ['Name', name], ['Email', email], ['Company', company || '—']];
   const text = `${rows.map(([k, v]) => `${k}: ${v}`).join('\n')}\n\n${message}`;
   const html = `<table cellpadding="4">${rows.map(([k, v]) => `<tr><td><b>${k}</b></td><td>${esc(v)}</td></tr>`).join('')}</table>`
@@ -45,7 +52,7 @@ export async function POST(req: Request) {
     const r = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ from: process.env.CONTACT_FROM || 'epox website <onboarding@resend.dev>', to, reply_to: email, subject, text, html }),
+      body: JSON.stringify({ from, to, reply_to: email, subject, text, html }),
     });
     if (!r.ok) {
       console.error('[contact] Resend error', r.status, await r.text().catch(() => ''));
