@@ -193,8 +193,10 @@ export function Header() {
       </div>
 
     </header>
-      {/* mobile menu: sits outside <header> so the header's backdrop-filter can't clip it; header is z-50 above it */}
-      <div id="sheet" className="sheet lg:hidden" data-theme="dark" data-open={sheet} aria-hidden={!sheet} role="dialog" aria-modal="true" aria-label="Menu">
+      {/* mobile menu: sits outside <header> so the header's backdrop-filter can't clip it; header is z-50 above it.
+          data-lenis-prevent: Lenis is stopped while the menu is open and swallows wheel events, so on a short window
+          with a mouse or trackpad (narrow laptop, tablet with trackpad) the menu's lower links could not be scrolled to */}
+      <div id="sheet" className="sheet lg:hidden" data-lenis-prevent data-theme="dark" data-open={sheet} aria-hidden={!sheet} role="dialog" aria-modal="true" aria-label="Menu">
         <div className="container-x flex flex-1 flex-col pt-24 pb-8">
           <p className="t-label sheet-in" style={{ '--i': 0 } as CSSProperties}>Services</p>
           <ul className="mt-4 grid gap-1">
