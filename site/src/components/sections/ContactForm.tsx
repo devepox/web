@@ -34,7 +34,10 @@ export function ContactForm({ forceState, accent = true }: { forceState?: State;
       const j = await r.json().catch(() => ({}));
       if (!r.ok) throw new Error(j.error ?? 'Something went wrong.');
       setState('success');
-    } catch (err) { setMsg((err as Error).message); setState('error'); }
+    } catch (err) {
+      // a network failure (offline, blocked) throws a TypeError with browser wording ("Failed to fetch"): show our own message instead
+      setMsg(err instanceof TypeError ? '' : (err as Error).message); setState('error');
+    }
   }
 
   if (s === 'success') {

@@ -61,7 +61,7 @@ export default function HowWeWorkPage() {
               <tbody>
                 {modelCompare.rows.map(row => (
                   <tr key={row}>
-                    <th scope="row" className="border-t border-line py-5 text-left align-top t-label muted font-medium">{row}</th>
+                    <th scope="row" className="border-t border-line py-5 text-left align-top t-label muted">{row}</th>
                     {models.map((m, i) => (
                       <td key={m.n} className="bg-card px-8 pb-5 align-top"><div className="border-t border-line pt-5 t-small">{cell(i, row)}</div></td>
                     ))}

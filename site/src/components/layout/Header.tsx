@@ -133,7 +133,7 @@ export function Header() {
           <Link ref={workRef} href="/work" className="nav-link" aria-current={isActive('/work') ? 'page' : undefined} onMouseEnter={scheduleClose}>Work</Link>
           <Link href={product.href} className="nav-link" aria-current={isActive(product.href) ? 'page' : undefined} onMouseEnter={scheduleClose}>{product.short}</Link>
 
-          <div id="mega" ref={megaRef} className="mega" data-open={panel !== null} onMouseEnter={() => open(panel)} onMouseLeave={scheduleClose}
+          <div id="mega" ref={megaRef} className="mega" data-open={panel !== null} onClick={(e) => { if ((e.target as Element).closest('a')) setPanel(null); }} onMouseEnter={() => open(panel)} onMouseLeave={scheduleClose}
             onKeyDown={(e) => {
               // keyboard inside the panel: Tab past the last link → next nav item; Shift+Tab on first → its trigger
               if (e.key !== 'Tab' || !panel) return;
@@ -197,9 +197,10 @@ export function Header() {
 
     </header>
       {/* mobile menu: sits outside <header> so the header's backdrop-filter can't clip it; header is z-50 above it.
+          onClick: a link to the page you are already on doesn't change the pathname, so close on every link tap.
           data-lenis-prevent: Lenis is stopped while the menu is open and swallows wheel events, so on a short window
           with a mouse or trackpad (narrow laptop, tablet with trackpad) the menu's lower links could not be scrolled to */}
-      <div id="sheet" className="sheet lg:hidden" data-lenis-prevent data-theme="dark" data-open={sheet} aria-hidden={!sheet} role="dialog" aria-modal="true" aria-label="Menu">
+      <div id="sheet" className="sheet lg:hidden" data-lenis-prevent onClick={(e) => { if ((e.target as Element).closest('a')) setSheet(false); }} data-theme="dark" data-open={sheet} aria-hidden={!sheet} role="dialog" aria-modal="true" aria-label="Menu">
         <div className="container-x flex flex-1 flex-col pt-24 pb-8">
           <p className="t-label sheet-in" style={{ '--i': 0 } as CSSProperties}>Services</p>
           <ul className="mt-4 grid gap-1">

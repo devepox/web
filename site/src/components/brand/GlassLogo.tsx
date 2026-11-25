@@ -428,14 +428,18 @@ function Scene({ onFirstFrame }: { onFirstFrame: () => void }) {
 const BUSY_MS = 1500, IDLE_FPS = 30;
 function Pacer({ active }: { active: boolean }) {
   const invalidate = useThree(s => s.invalidate);
+  const canvas = useThree(s => s.gl.domElement);
   const busyUntil = useRef(0);
   // busy: every rendered frame asks for the next one from inside the frame, which keeps R3F's loop running at the
   // display rate like frameloop="always" (an invalidate() from outside a frame only gets every other frame drawn)
-  useFrame(state => { if (performance.now() < busyUntil.current) state.invalidate(); });
+  useFrame(state => { if (performance.now() < busyUntil.current && canvas.getClientRects().length > 0) state.invalidate(); });
   useEffect(() => {
     if (!active) return;
     let raf = 0; let last = 0;
+    // the route may be kept alive hidden (Next keeps recent pages in a hidden Activity): draw nothing while not laid out
+    const shown = () => canvas.getClientRects().length > 0;
     const kick = () => {
+      if (!shown()) return;
       const wasIdle = performance.now() >= busyUntil.current;
       busyUntil.current = performance.now() + BUSY_MS;
       if (wasIdle) invalidate();
@@ -443,13 +447,13 @@ function Pacer({ active }: { active: boolean }) {
     // idle: one frame every 1/IDLE_FPS s for the sway
     const loop = (t: number) => {
       raf = requestAnimationFrame(loop);
-      if (t >= busyUntil.current && t - last >= 1000 / IDLE_FPS - 2) { last = t; invalidate(); }
+      if (t >= busyUntil.current && t - last >= 1000 / IDLE_FPS - 2 && shown()) { last = t; invalidate(); }
     };
     const offLight = onLight(kick); const offStory = onStory(kick); const offAnchor = onAnchor(kick);
     window.addEventListener('resize', kick);
     kick(); raf = requestAnimationFrame(loop);
     return () => { cancelAnimationFrame(raf); offLight(); offStory(); offAnchor(); window.removeEventListener('resize', kick); };
-  }, [active, invalidate]);
+  }, [active, invalidate, canvas]);
   return null;
 }
 

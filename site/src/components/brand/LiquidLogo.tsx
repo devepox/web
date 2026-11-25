@@ -1,6 +1,6 @@
 'use client';
 import dynamic from 'next/dynamic';
-import { useEffect, useRef, useState } from 'react';
+import { Component, useEffect, useRef, useState } from 'react';
 import { whenIdle } from '@/lib/motion';
 import { getStory, hasWebGL2, onStory, story2D, storyOn } from '@/lib/story';
 
@@ -32,6 +32,13 @@ function mayRun3D() {
   if (story2D()) return false; // the flat story (phones, tablets) uses the video loop
   if (!storyOn() && !window.matchMedia('(hover: hover) and (pointer: fine) and (min-width: 768px)').matches) return false;
   return (navigator.hardwareConcurrency || 4) >= 4;
+}
+
+/** If the 3D scene throws (WebGL context refused, lost GPU), drop it and keep the still instead of failing the page. */
+class GlassBoundary extends Component<{ children: React.ReactNode }, { failed: boolean }> {
+  state = { failed: false };
+  static getDerivedStateFromError() { return { failed: true }; }
+  render() { return this.state.failed ? null : this.props.children; }
 }
 
 export function LiquidLogo({ className = '' }: { variant?: 'hero'; className?: string }) {
@@ -77,7 +84,8 @@ export function LiquidLogo({ className = '' }: { variant?: 'hero'; className?: s
         if (cancelled) return; ready = true;
         if (use3D && !hasWebGL2()) use3D = false;
         if (!use3D) { sync(); return; }
-        import('./GlassLogo').then(m => m.prepareGlass()).then(() => { if (!cancelled) setGlass(true); });
+        import('./GlassLogo').then(m => m.prepareGlass()).then(() => { if (!cancelled) setGlass(true); })
+          .catch(() => {}); // chunk failed to load (offline, or an old chunk gone after a deploy): keep the still
       });
     };
     const onAct = () => { if (acted) return; acted = true; kinds.forEach(k => window.removeEventListener(k, onAct)); go(); };
@@ -99,9 +107,11 @@ export function LiquidLogo({ className = '' }: { variant?: 'hero'; className?: s
       <Loop name="hero-16x9" className="liquid-video liquid-wide" />
       <Loop name="hero-4x5" className="liquid-video liquid-tall" />
       {glass && (
-        <div className="liquid-3d" data-on={glassOn || undefined}>
-          <GlassLogo active={onScreen} onReady={() => setGlassOn(true)} />
-        </div>
+        <GlassBoundary>
+          <div className="liquid-3d" data-on={glassOn || undefined}>
+            <GlassLogo active={onScreen} onReady={() => setGlassOn(true)} />
+          </div>
+        </GlassBoundary>
       )}
     </div>
   );

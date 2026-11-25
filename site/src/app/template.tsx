@@ -1,8 +1,10 @@
 'use client';
 import { useEffect, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import { scrollToTop } from '@/lib/motion';
 
-// Re-mounts on every navigation:
+// Runs on every navigation (keyed on the pathname: the root template only re-mounts when the top-level segment
+// changes, so /work → /work/<case> or one service → another would otherwise never wire up the new page):
 //  · page enter transition (H2), skipped on the very first load so the hero (LCP) paints immediately;
 //  · scroll reset (unless the URL has a #section);
 //  · reveal observer: L4 section entrance [data-reveal], H13 title rise [data-rise], H15 media unveil [data-unveil]. It lives here because this effect runs only after the page inside has hydrated,
@@ -11,6 +13,7 @@ let firstLoad = true;
 
 export default function Template({ children }: { children: React.ReactNode }) {
   const [animate] = useState(() => !firstLoad);
+  const pathname = usePathname();
 
   useEffect(() => {
     firstLoad = false;
@@ -43,16 +46,18 @@ export default function Template({ children }: { children: React.ReactNode }) {
     if (!('IntersectionObserver' in window)) { els.forEach(reveal); return; }
     // Chrome's IntersectionObserver honours the target's own clip-path, so a fully clipped [data-unveil] element is never
     // "visible": observe its (unclipped) parent instead and reveal the element itself.
-    const targetOf = new Map<Element, HTMLElement>();
+    // one watched element can stand for several (a [data-reveal] card and its own [data-unveil] child): keep them all
+    const targetsOf = new Map<Element, HTMLElement[]>();
     const io = new IntersectionObserver((entries) => {
-      for (const e of entries) if (e.isIntersecting) { reveal(targetOf.get(e.target) ?? (e.target as HTMLElement)); io.unobserve(e.target); }
+      for (const e of entries) if (e.isIntersecting) { (targetsOf.get(e.target) ?? [e.target as HTMLElement]).forEach(reveal); io.unobserve(e.target); }
     }, { rootMargin: '0px 0px -10% 0px', threshold: 0.05 });
     els.forEach(e => {
       const watch = e.hasAttribute('data-unveil') && e.parentElement ? e.parentElement : e;
-      targetOf.set(watch, e); io.observe(watch);
+      const list = targetsOf.get(watch);
+      if (list) list.push(e); else { targetsOf.set(watch, [e]); io.observe(watch); }
     });
     return () => io.disconnect();
-  }, []);
+  }, [pathname]);
 
   return <div className={animate ? 'page-enter' : undefined}>{children}</div>;
 }

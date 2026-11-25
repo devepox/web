@@ -142,8 +142,8 @@ export const stats = [
 ];
 
 export const industries = [
-  { name: 'PropTech', meta: '1 project', line: 'Move-in and move-out records tenants and landlords both trust.' },
-  { name: 'Health & nutrition', meta: '1 project', line: 'Meal tracking with real nutritionists in the loop.' },
+  { name: 'PropTech', meta: 'Live app', line: 'Move-in and move-out records tenants and landlords both trust.' },
+  { name: 'Health & nutrition', meta: 'Live app', line: 'Meal tracking with real nutritionists in the loop.' },
   { name: 'Restaurants & retail', meta: 'Our own product', line: 'Tills, online orders, riders and loyalty in one system.' },
 ];
 
