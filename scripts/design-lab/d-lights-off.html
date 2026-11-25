@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>D · Lights off (landing concept)</title>
+<link rel="stylesheet" href="lab.css">
+<style>
+/* D · Lights off: the page is dark; the cursor is a flashlight. Where it falls, the headline lights up and the
+   problems hidden in the page show (Found corners + notes). "We find the problem before you do", as an interaction. */
+body { background: #050608; overflow: hidden; }
+.stage { position: relative; width: 100vw; height: 100vh; overflow: hidden; --lx: 50%; --ly: 50%; --r: 470px; }
+.nav { position: absolute; inset: 0 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 26px 56px; z-index: 5; opacity: .55; }
+.nav .links { display: flex; gap: 34px; font: 500 14px/1 IN; color: var(--muted); }
+.nav .wm { width: 86px; }
+/* the wall: a faint page grid, only visible in the light */
+.grid { position: absolute; inset: 0; background-image: linear-gradient(#ffffff08 1px, transparent 1px), linear-gradient(90deg, #ffffff08 1px, transparent 1px); background-size: 96px 96px; }
+.layer { position: absolute; inset: 0; padding: 0 56px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+.h1 { font: 700 132px/0.95 SG; letter-spacing: -0.045em; margin: 0; }
+.h1 .big { font-size: 1.55em; line-height: 0.9; display: inline-block; }
+.dark .h1 { color: #111318; }
+#ghosts .note { color: #1b1e24; } #ghosts .note .tag { background: #15181d; color: #2a2e36; } #ghosts .box::after { background: #1b1e24; }
+.lit { -webkit-mask: radial-gradient(circle var(--r) at var(--lx) var(--ly), #000 0 38%, #0008 62%, transparent 100%); mask: radial-gradient(circle var(--r) at var(--lx) var(--ly), #000 0 38%, #0008 62%, transparent 100%); }
+.lit .h1 { color: #F2F5F9; }
+.lit .w-key { background: var(--foil); background-size: 200% 200%; background-position: 30% 50%; -webkit-background-clip: text; background-clip: text; color: transparent; }
+/* the beam itself: a soft cool light on the wall */
+.beam { position: absolute; inset: 0; background: radial-gradient(circle calc(var(--r) * 1.25) at var(--lx) var(--ly), #CFEFFF1c, #8FC9FF0d 45%, transparent 70%); pointer-events: none; }
+.cursor { position: absolute; left: var(--lx); top: var(--ly); width: 18px; height: 18px; margin: -9px 0 0 -9px; border-radius: 50%; box-shadow: inset 0 0 0 1.5px #E2FFF4; }
+/* hidden notes: what the light finds */
+.note { position: absolute; width: 270px; font: 500 13px/1.45 IN; color: var(--text); }
+.note .tag { display: inline-flex; gap: 8px; align-items: center; font: 700 10.5px/1 IN; letter-spacing: .22em; text-transform: uppercase; color: #0B0C0F; background: var(--foil); padding: 6px 9px; border-radius: 4px; margin-bottom: 10px; }
+.note .muted { color: var(--muted); }
+.box { position: absolute; }
+.box::after { content: ''; position: absolute; inset: 0; --l: 26px; --t: 2px; background: var(--foil);
+  -webkit-mask: linear-gradient(#000 0 0) top left / var(--l) var(--t), linear-gradient(#000 0 0) top left / var(--t) var(--l), linear-gradient(#000 0 0) top right / var(--l) var(--t), linear-gradient(#000 0 0) top right / var(--t) var(--l), linear-gradient(#000 0 0) bottom left / var(--l) var(--t), linear-gradient(#000 0 0) bottom left / var(--t) var(--l), linear-gradient(#000 0 0) bottom right / var(--l) var(--t), linear-gradient(#000 0 0) bottom right / var(--t) var(--l); -webkit-mask-repeat: no-repeat; }
+.foot { position: absolute; left: 56px; right: 56px; bottom: 40px; display: flex; align-items: center; justify-content: space-between; z-index: 5; }
+.hint { font: 700 11px/1.4 IN; letter-spacing: .22em; text-transform: uppercase; color: #6B7280; }
+.ctas { display: flex; gap: 12px; }
+.ghost { color: #2a2e36; }
+@media (max-width: 600px) {
+  .stage { --lx: 50%; --ly: 40%; --r: 300px; }
+  .nav { padding: 20px 20px; } .nav .links { display: none; } .nav .wm { width: 70px; }
+  .layer { padding: 0 16px; justify-content: flex-start; padding-top: 170px; }
+  .h1 { font-size: 46px; line-height: .98; }
+  .h1 .big { font-size: 1.62em; }
+  .note { width: 220px; font-size: 12px; }
+  .foot { left: 20px; right: 20px; bottom: 28px; flex-direction: column; align-items: flex-start; gap: 16px; }
+}
+</style></head>
+<body>
+<div class="stage">
+  <div class="nav"><div class="wm" data-wordmark></div><div class="links"><span>Work</span><span>Services</span><span>How we work</span><span>About</span></div><a class="pill outline" style="height:42px;padding:0 20px;font-size:13px">Let's talk</a></div>
+  <div class="grid lit"></div>
+  <div class="beam"></div>
+  <!-- the page in the dark -->
+  <div class="layer dark"><h1 class="h1">We find the<br><span class="big">problem</span><br>before you do.</h1></div>
+  <!-- the same page where the light falls, with what it finds -->
+  <div class="layer lit" id="lit">
+    <h1 class="h1">We find the<br><span class="big w-key">problem</span><br>before you do.</h1>
+  </div>
+  <div style="position:absolute;inset:0" id="ghosts"></div>
+  <div class="lit" style="position:absolute;inset:0" id="finds"></div>
+  <div class="cursor"></div>
+  <div class="foot">
+    <span class="hint">Every product hides something. Move the light.</span>
+    <div class="ctas"><a class="pill foil">Let's talk →</a><a class="pill outline">See what we found</a></div>
+  </div>
+</div>
+<script src="lab.js"></script>
+<script>
+// place the Found box on the lit key word and the notes around the light (layout depends on the fonts)
+document.fonts.ready.then(() => {
+  const st = document.querySelector('.stage'), key = document.querySelector('#lit .w-key'), finds = document.getElementById('finds');
+  const r = key.getBoundingClientRect(), phone = innerWidth < 600;
+  const ghosts = document.getElementById('ghosts');
+  // the light rests on the end of the key word on desktops (so the finding beside it is in the beam), centred on phones
+  st.style.setProperty('--lx', `${phone ? r.left + r.width * 0.5 : r.left + r.width * 0.78}px`); st.style.setProperty('--ly', `${r.top + r.height * 0.55}px`);
+  const box = `<div class="box" style="left:${r.left - 14}px;top:${r.top + 6}px;width:${r.width + 28}px;height:${r.height - 2}px"></div>`;
+  finds.insertAdjacentHTML('beforeend', box);
+  const note = n => `<div class="note" style="left:${n.x}px;top:${n.y}px;${n.w ? `width:${n.w}px;text-align:${n.c ? 'center' : 'right'}` : ''}"><div class="tag">${n.t}</div><div>${n.b}</div></div>`;
+  const lit = phone
+    ? [{ x: Math.max(20, r.left + r.width / 2 - 125), y: r.bottom + 120, t: 'Found · checkout', b: 'Your “Buy” button sits below the fold on 41% of phones.', w: 250, c: true }]
+    : [{ x: r.right + 30, y: r.top + 30, t: 'Found · checkout', b: 'Your “Buy” button sits below the fold on 41% of phones. <span class="muted">Fix: 1 day.</span>' }];
+  // still in the dark: barely there until the light reaches them
+  const dark = phone
+    ? [{ x: 20, y: innerHeight - 250, t: 'Found · speed', b: 'The first screen waits 4.8 s for a 6 MB image.' }]
+    : [{ x: 70, y: 150, t: 'Found · speed', b: 'The first screen waits 4.8 s for a 6 MB image.' },
+       { x: innerWidth - 330, y: innerHeight - 250, t: 'Found · trust', b: 'No company address anywhere on the site. Fix: 10 minutes.' }];
+  lit.forEach(n => finds.insertAdjacentHTML('beforeend', note(n)));
+  dark.forEach(n => ghosts.insertAdjacentHTML('beforeend', note(n)));
+});
+</script>
+</body></html>

@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>H · Exhibit (landing concept)</title>
+<link rel="stylesheet" href="lab.css">
+<style>
+/* H · Exhibit: the home page as a dark gallery. The glass logo hangs as a lit work on the wall, its light pooling on
+   the floor; a museum placard carries the pitch. Luxury through restraint: one object, one light, very little text. */
+body { overflow: hidden; }
+.stage { position: relative; width: 100vw; height: 100vh; overflow: hidden;
+  background: linear-gradient(#08090C 0 66%, #0D0F13 66.2%, #07080A 100%); }
+.nav { position: absolute; inset: 0 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 26px 56px; z-index: 6; }
+.nav .wm { width: 86px; } .nav .links { display: flex; gap: 34px; font: 500 14px/1 IN; color: var(--muted); }
+.cone { position: absolute; left: 50%; top: -10%; width: 1100px; height: 900px; transform: translateX(-62%);
+  background: radial-gradient(50% 60% at 50% 0%, #DDF4FF22, #8FC9FF0c 55%, transparent 75%); filter: blur(4px); }
+.work { position: absolute; left: 50%; top: 15%; width: 760px; transform: translateX(-62%); aspect-ratio: 16 / 9;
+  background: url(assets/glass-16x9-turned.jpg) center / cover; mix-blend-mode: lighten;
+  -webkit-mask: radial-gradient(70% 75% at 50% 50%, #000 55%, transparent 100%); mask: radial-gradient(70% 75% at 50% 50%, #000 55%, transparent 100%); }
+.pool { position: absolute; left: 50%; top: 66%; width: 900px; height: 180px; transform: translateX(-62%);
+  background: radial-gradient(50% 50% at 50% 30%, #A8F0E033, #8FC9FF14 45%, transparent 75%); filter: blur(10px); }
+.refl { position: absolute; left: 50%; top: 66.5%; width: 760px; aspect-ratio: 16 / 9; transform: translateX(-62%) scaleY(-1);
+  background: url(assets/glass-16x9-turned.jpg) center / cover; opacity: .16; filter: blur(6px); mix-blend-mode: lighten;
+  -webkit-mask: linear-gradient(to top, #000, transparent 45%); mask: linear-gradient(to top, #000, transparent 45%); }
+.placard { position: absolute; right: 7%; top: 47%; width: 280px; background: var(--paper); color: var(--ink); padding: 22px 22px 20px; border-radius: 3px; }
+.placard .n { font: 700 10.5px/1 IN; letter-spacing: .22em; text-transform: uppercase; color: var(--ink-muted); }
+.placard h2 { margin: 12px 0 2px; font: 700 26px/1.05 SG; letter-spacing: -0.02em; }
+.placard .yr { font: 500 13px/1.4 IN; color: var(--ink-muted); }
+.placard p { margin: 12px 0 0; font: 400 13.5px/1.5 IN; }
+.placard .m { margin-top: 12px; font: 500 12px/1.45 IN; color: var(--ink-muted); }
+.placard a { margin-top: 16px; height: 42px; padding: 0 20px; font-size: 13px; }
+.tag { position: absolute; left: 56px; bottom: 44px; z-index: 5; }
+.tag h1 { margin: 10px 0 0; font: 700 40px/1.05 SG; letter-spacing: -0.03em; max-width: 16ch; }
+@media (max-width: 600px) {
+  .nav { padding: 20px; } .nav .links, .nav .pill { display: none; } .nav .wm { width: 70px; }
+  .stage { background: linear-gradient(#08090C 0 50%, #0D0F13 50.2%, #07080A 100%); }
+  .cone, .work, .pool, .refl { transform: translateX(-50%); }
+  .work, .refl { width: 470px; } .work { top: 22%; } .refl { top: 50.5%; } .pool { top: 50%; width: 420px; }
+  .cone { width: 600px; height: 600px; }
+  .refl { transform: translateX(-50%) scaleY(-1); }
+  .placard { right: 20px; left: 20px; width: auto; top: auto; bottom: 26px; }
+  .tag { left: 20px; top: 92px; bottom: auto; } .tag h1 { font-size: 30px; }
+}
+</style></head>
+<body>
+<div class="stage">
+  <div class="nav"><div class="wm" data-wordmark></div><div class="links"><span>Work</span><span>Services</span><span>How we work</span><span>About</span></div><a class="pill outline" style="height:42px;padding:0 20px;font-size:13px">Let's talk</a></div>
+  <div class="cone"></div><div class="refl"></div><div class="pool"></div><div class="work"></div>
+  <div class="tag"><p class="label">Exhibit 01 · Faisalabad</p><h1>We find the problem before you do.</h1></div>
+  <div class="placard">
+    <div class="n">Exhibit 01</div>
+    <h2>epox</h2>
+    <div class="yr">Software house, 2019–present</div>
+    <p>Web, mobile and AI products, built and kept running. Found the problem first, every time.</p>
+    <div class="m">Glass, foil and a one-working-day reply.<br>On loan to anyone who reaches out.</div>
+    <a class="pill ink">Let's talk →</a>
+  </div>
+</div>
+<script src="lab.js"></script>
+</body></html>

@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>G · Night drive (landing concept)</title>
+<link rel="stylesheet" href="lab.css">
+<style>
+/* G · Night drive: the E's three bars as long-exposure light trails, racing in from the right edge and braking
+   into the E's slanted heads. On load they streak in; on scroll they stretch and leave the page faster. */
+body { overflow: hidden; }
+.stage { position: relative; width: 100vw; height: 100vh; overflow: hidden; background: radial-gradient(120% 90% at 70% 35%, #0E1218 0%, #07080B 60%, #050608 100%); }
+.nav { position: absolute; inset: 0 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 26px 56px; z-index: 6; }
+.nav .wm { width: 86px; } .nav .links { display: flex; gap: 34px; font: 500 14px/1 IN; color: var(--muted); }
+svg.trails { position: absolute; inset: 0; width: 100%; height: 100%; mix-blend-mode: screen; }
+.copy { position: absolute; left: 56px; bottom: 56px; right: 56px; display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 40px; z-index: 5; }
+.h1 { margin: 18px 0 0; font: 700 96px/0.95 SG; letter-spacing: -0.045em; max-width: 11ch; }
+.h1 .k { position: relative; }
+.side { display: grid; gap: 22px; justify-items: end; text-align: right; }
+.side p { margin: 0; max-width: 34ch; color: var(--muted); }
+.speed { position: absolute; right: 56px; top: 112px; z-index: 5; text-align: right; }
+.speed b { display: block; font: 500 54px/1 SG; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+@media (max-width: 600px) {
+  .nav { padding: 20px; } .nav .links, .nav .pill { display: none; } .nav .wm { width: 70px; }
+  .copy { left: 20px; right: 20px; bottom: 28px; grid-template-columns: 1fr; gap: 22px; }
+  .h1 { font-size: 54px; }
+  .side { justify-items: start; text-align: left; }
+  .speed { right: 20px; top: 84px; } .speed b { font-size: 36px; }
+}
+</style></head>
+<body>
+<div class="stage">
+  <div class="nav"><div class="wm" data-wordmark></div><div class="links"><span>Work</span><span>Services</span><span>How we work</span><span>About</span></div><a class="pill outline" style="height:42px;padding:0 20px;font-size:13px">Let's talk</a></div>
+  <svg class="trails" id="trails" aria-hidden="true"></svg>
+  <div class="copy">
+    <div><p class="label">Software house · Faisalabad · Since 2019</p><h1 class="h1">We find the problem <span class="k found">before</span> you do.</h1></div>
+    <div class="side"><p>We build web, mobile and AI software, then stay to keep it running.</p>
+      <div style="display:flex;gap:12px"><a class="pill outline">See our work</a><a class="pill foil">Let's talk →</a></div></div>
+  </div>
+</div>
+<script src="lab.js"></script>
+<script>
+// Three trails at the E's proportions. Each: a wide blurred glow, a foil body, a white-hot core and a spray of thin
+// long-exposure lines, all brightest at the slanted head and fading out toward the right edge.
+const W = innerWidth, H = innerHeight, phone = W < 600;
+const TRAIL_FOIL = ['#BFE3FF', '#E2FFF4', '#8FC9FF', '#7FF5D0', '#E4FBFF', '#A8F0E0'];
+const slant = 0.44;                      // the E's head slant (0.44 across per 1 down)
+const th = phone ? 40 : 70, gap = phone ? 28 : 46;
+const top0 = phone ? 112 : 122, head0 = phone ? 96 : 600;
+let rnd = 7; const R = () => (rnd = (rnd * 16807) % 2147483647) / 2147483647;
+const defs = `<linearGradient id="foilH" x1="0" x2="1" y1="0" y2="0">${TRAIL_FOIL.map((c, i) => `<stop offset="${i / 5}" stop-color="${c}"/>`).join('')}</linearGradient>
+  <linearGradient id="halo" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#6FC3FF"/><stop offset="0.5" stop-color="#5FF2CC"/><stop offset="1" stop-color="#8FC9FF"/></linearGradient>
+  <linearGradient id="fade" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#fff"/><stop offset="0.45" stop-color="#fff"/><stop offset="0.8" stop-color="#fff" stop-opacity="0.45"/><stop offset="1" stop-color="#fff" stop-opacity="0.08"/></linearGradient>
+  <radialGradient id="flare"><stop offset="0" stop-color="#fff"/><stop offset="0.35" stop-color="#E9FFFA" stop-opacity="0.8"/><stop offset="1" stop-color="#8FC9FF" stop-opacity="0"/></radialGradient>
+  <mask id="m"><rect x="0" y="0" width="${W}" height="${H}" fill="url(#fade)"/></mask>
+  <filter id="halo-blur" filterUnits="userSpaceOnUse" x="-400" y="-400" width="4000" height="3000"><feGaussianBlur stdDeviation="${phone ? 16 : 30}"/></filter>
+  <filter id="b6" filterUnits="userSpaceOnUse" x="-400" y="-400" width="4000" height="3000"><feGaussianBlur stdDeviation="${phone ? 4 : 6}"/></filter>
+  <filter id="b2" x="-5%" y="-200%" width="110%" height="500%"><feGaussianBlur stdDeviation="1.4"/></filter>
+  <filter id="spark"><feGaussianBlur stdDeviation="1.1"/></filter>`;
+let body = '';
+for (let i = 0; i < 3; i++) {
+  const y = top0 + i * (th + gap), hx = head0 - i * (th + gap) * slant;   // heads step left like the E's spine
+  // a band of the trail between y1 and y2 (fractions of its height), with the E's slanted head
+  const band = (f1, f2) => { const y1 = y + th * f1, y2 = y + th * f2; return `${hx + th * slant - (y1 - y) * slant},${y1} ${W + 60},${y1} ${W + 60},${y2} ${hx + th * slant - (y2 - y) * slant},${y2}`; };
+  body += `<g mask="url(#m)">
+    <polygon points="${band(-0.6, 1.6)}" fill="url(#halo)" opacity="0.38" filter="url(#halo-blur)"/>
+    <polygon points="${band(0, 1)}" fill="url(#foilH)" opacity="0.42" filter="url(#b6)"/>
+    <polygon points="${band(0.22, 0.78)}" fill="url(#foilH)" opacity="0.9" filter="url(#b6)"/>
+    <polygon points="${band(0.42, 0.58)}" fill="#FFFFFF" filter="url(#b2)"/>`;
+  for (let k = 0; k < (phone ? 10 : 22); k++) {
+    const yy = y - th * 0.4 + R() * th * 1.8, x1 = hx + th * 0.3 + R() * (phone ? 140 : 380);
+    body += `<line x1="${x1}" y1="${yy}" x2="${W + 60}" y2="${yy}" stroke="${R() > 0.6 ? '#FFFFFF' : TRAIL_FOIL[(k + i) % 6]}" stroke-width="${0.5 + R() * 1.3}" opacity="${0.35 + R() * 0.55}"/>`;
+  }
+  body += `</g>`;
+  // the hot spot where each trail brakes into its slanted head
+  body += `<ellipse cx="${hx + th * slant * 0.5 + th * 0.35}" cy="${y + th / 2}" rx="${th * 1.25}" ry="${th * 0.62}" fill="url(#flare)" opacity="0.85"/>`;
+  for (let k = 0; k < (phone ? 7 : 12); k++) {
+    const sx = hx - 24 + R() * 170, sy = y - th * 0.2 + R() * th * 1.4;
+    body += `<circle cx="${sx}" cy="${sy}" r="${0.7 + R() * 1.7}" fill="#F2FFFB" opacity="${0.45 + R() * 0.55}" filter="url(#spark)"/>`;
+  }
+}
+document.getElementById('trails').innerHTML = `<defs>${defs}</defs>${phone ? `<g transform="rotate(-9 ${W / 2} 200)">${body}</g>` : body}`;
+</script>
+</body></html>

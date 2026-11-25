@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>E · Foil macro (landing concept)</title>
+<link rel="stylesheet" href="lab.css">
+<style>
+/* E · Foil macro: the brand idea set huge, cut out of black, with a crumpled holographic foil sheet (the business
+   card's foil, close up) behind it. Tactile: the foil's creases and colours shift with the cursor (shared light). */
+body { overflow: hidden; }
+.stage { position: relative; width: 100vw; height: 100vh; overflow: hidden; background: var(--black); }
+.nav { position: absolute; inset: 0 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 26px 56px; z-index: 5; }
+.nav .links { display: flex; gap: 34px; font: 500 14px/1 IN; color: var(--muted); }
+.nav .wm { width: 86px; }
+svg.type { position: absolute; inset: 0; width: 100%; height: 100%; }
+.meta { position: absolute; left: 56px; right: 56px; bottom: 44px; display: grid; grid-template-columns: 1.1fr 1fr auto; gap: 40px; align-items: end; z-index: 5; }
+.meta p { margin: 0; color: var(--muted); max-width: 40ch; font-size: 17px; }
+.facts { display: flex; gap: 36px; }
+.facts div { display: grid; gap: 6px; } .facts b { font: 500 20px/1 SG; color: var(--text); }
+.top-label { position: absolute; left: 56px; top: 118px; z-index: 5; }
+.edge { position: absolute; right: 56px; top: 118px; z-index: 5; text-align: right; }
+@media (max-width: 600px) {
+  .nav { padding: 20px; } .nav .links { display: none; } .nav .wm { width: 70px; }
+  .top-label { left: 20px; top: 92px; } .edge { display: none; }
+  .meta { left: 20px; right: 20px; bottom: 28px; grid-template-columns: 1fr; gap: 18px; }
+  .facts { display: none; }
+  .meta p { font-size: 15px; }
+}
+</style></head>
+<body>
+<div class="stage">
+  <div class="nav"><div class="wm" data-wordmark></div><div class="links"><span>Work</span><span>Services</span><span>How we work</span><span>About</span></div><a class="pill outline" style="height:42px;padding:0 20px;font-size:13px">Let's talk</a></div>
+  <p class="label top-label">Software house · Faisalabad</p>
+  <p class="label edge">Since 2019<br><span class="live">Apps live, run by us</span></p>
+  <svg class="type" id="type" aria-label="We find it first."></svg>
+  <div class="meta">
+    <p>We find what is holding your product back, fix it, and stay to keep it running. Web, mobile and AI.</p>
+    <div class="facts"><div><span class="label">Reply</span><b class="num">1 working day</b></div><div><span class="label">Time zone</span><b class="num">UTC+5</b></div></div>
+    <a class="pill foil">Let's talk →</a>
+  </div>
+</div>
+<script src="lab.js"></script>
+<script>
+// Build the knockout type once the brand font is ready: SVG text as a clip path over a crumpled foil sheet
+// (fractal noise → displaced foil gradient for the colour shifts, lit as a relief for the creases + specular glints).
+document.fonts.ready.then(() => {
+  const W = innerWidth, H = innerHeight, phone = W < 600;
+  const lines = phone ? ['We', 'find', 'it', 'first.'] : ['We find', 'it first.'];
+  const size = phone ? 132 : 330, lead = phone ? 0.86 : 0.86, x = phone ? 16 : 44;
+  const y0 = phone ? 250 : 418;
+  // desktop: second line flush right, so the type spans the screen
+  const text = lines.map((l, i) => { const end = !phone && i === 1; return `<text x="${end ? W - 40 : x}" y="${y0 + i * size * lead}" text-anchor="${end ? 'end' : 'start'}" font-family="SG" font-weight="700" font-size="${size}" letter-spacing="${-0.05 * size}">${l}</text>`; }).join('');
+  const stops = [['0', '#BFE3FF'], ['0.2', '#E2FFF4'], ['0.4', '#8FC9FF'], ['0.58', '#7FF5D0'], ['0.78', '#E4FBFF'], ['1', '#A8F0E0']].map(([o, c]) => `<stop offset="${o}" stop-color="${c}"/>`).join('');
+  document.getElementById('type').innerHTML = `
+    <defs>
+      <linearGradient id="fg" x1="0" y1="0" x2="1" y2="0.55" spreadMethod="reflect">${stops}</linearGradient>
+      <filter id="crumple" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+        <feTurbulence type="fractalNoise" baseFrequency="${phone ? '0.008 0.012' : '0.0038 0.0056'}" numOctaves="5" seed="11" result="noise"/>
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="${phone ? 420 : 900}" xChannelSelector="R" yChannelSelector="G" result="holo"/>
+        <feDiffuseLighting in="noise" surfaceScale="${phone ? 8 : 11}" diffuseConstant="1.3" lighting-color="#ffffff" result="relief">
+          <feDistantLight azimuth="235" elevation="30"/>
+        </feDiffuseLighting>
+        <feSpecularLighting in="noise" surfaceScale="${phone ? 8 : 11}" specularConstant="1.2" specularExponent="30" lighting-color="#F4FFFB" result="glint">
+          <feDistantLight azimuth="235" elevation="52"/>
+        </feSpecularLighting>
+        <feBlend in="holo" in2="relief" mode="multiply" result="lit"/>
+        <feComposite in="glint" in2="lit" operator="arithmetic" k1="0" k2="0.55" k3="1" k4="0" result="out"/>
+      </filter>
+      <clipPath id="knock">${text}</clipPath>
+    </defs>
+    <g clip-path="url(#knock)"><rect width="${W}" height="${H}" fill="url(#fg)" filter="url(#crumple)"/></g>`;
+});
+</script>
+</body></html>

@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>F · Cover story (landing concept)</title>
+<link rel="stylesheet" href="lab.css">
+<style>
+/* F · Cover story: the home page is the cover of epox's own magazine, FOUND. (the brand's "found" idea as a
+   masthead), with the glass logo as the cover star. The contents page beside it is the navigation. */
+body { overflow: hidden; }
+.stage { position: relative; width: 100vw; height: 100vh; overflow: hidden; background: var(--black); }
+.nav { position: absolute; inset: 0 0 auto; height: 76px; display: flex; align-items: center; justify-content: space-between; padding: 0 56px; z-index: 6; }
+.nav .wm { width: 80px; } .nav .links { display: flex; gap: 34px; font: 500 14px/1 IN; color: var(--muted); }
+.cover { position: absolute; left: 56px; top: 92px; width: 600px; height: 750px; overflow: hidden; background: #0B0C0F url(assets/glass-4x5.jpg) center 54% / cover no-repeat; outline: 1px solid #2a2f38; }
+.cover .issue { position: absolute; left: 26px; right: 26px; top: 20px; display: flex; justify-content: space-between; }
+.cover .mast { position: absolute; left: 18px; top: 34px; font: 700 172px/0.9 SG; letter-spacing: -0.07em; background: var(--foil); background-size: 160% 160%; -webkit-background-clip: text; background-clip: text; color: transparent; }
+.cover .by { position: absolute; right: 28px; top: 156px; font: 700 11px/1.3 IN; letter-spacing: .22em; text-transform: uppercase; color: var(--text); text-align: right; }
+.cover .lines { position: absolute; left: 26px; right: 26px; bottom: 24px; display: grid; grid-template-columns: 1.15fr 1fr; gap: 22px; align-items: end; }
+.cover .hed { font: 700 36px/1.02 SG; letter-spacing: -0.03em; margin: 0; }
+.cover .hed .k { background: var(--foil); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.cover ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 9px; font: 500 13px/1.3 IN; color: var(--text); }
+.cover li { display: flex; justify-content: space-between; gap: 12px; border-top: 1px solid #ffffff22; padding-top: 8px; }
+.cover li b { font: 500 13px/1.3 SG; color: var(--muted); font-variant-numeric: tabular-nums; }
+.barcode { display: flex; align-items: flex-end; gap: 10px; margin-top: 14px; }
+.barcode svg { height: 34px; width: 120px; }
+.barcode span { font: 700 10px/1.3 IN; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); }
+/* the contents page = navigation */
+.toc { position: absolute; left: 730px; right: 56px; top: 132px; }
+.toc ol { list-style: none; margin: 28px 0 0; padding: 0; }
+.toc li { display: grid; grid-template-columns: 92px 1fr; align-items: baseline; border-top: 1px solid var(--line); padding: 18px 0 20px; }
+.toc .pg { font: 500 44px/1 SG; letter-spacing: -0.03em; background: var(--foil); -webkit-background-clip: text; background-clip: text; color: transparent; font-variant-numeric: tabular-nums; }
+.toc .t { font: 700 34px/1.1 SG; letter-spacing: -0.025em; }
+.toc .d { display: block; margin-top: 6px; font: 400 15px/1.4 IN; color: var(--muted); }
+.toc .ctas { display: flex; gap: 12px; margin-top: 30px; }
+@media (max-width: 600px) {
+  .nav { height: 60px; padding: 0 18px; } .nav .links, .nav .pill { display: none; } .nav .wm { width: 66px; }
+  .nav::after { content: ''; width: 22px; height: 14px; border-top: 2px solid var(--text); border-bottom: 2px solid var(--text); }
+  .cover { left: 0; top: 60px; width: 100vw; height: calc(100vh - 60px); outline: 0; background-position: center 118px; background-size: 112% auto; }
+  .cover .mast { font-size: 128px; left: 12px; top: 30px; }
+  .cover .issue { left: 18px; right: 18px; top: 14px; }
+  .cover .lines { grid-template-columns: 1fr; left: 18px; right: 18px; bottom: 22px; gap: 16px; }
+  .cover .hed { font-size: 34px; }
+  .cover .barcode, .cover li.x, .cover .issue span:last-child { display: none; }
+  .toc { display: none; }
+  .phone-cta { display: flex !important; gap: 10px; }
+}
+.phone-cta { display: none; }
+</style></head>
+<body>
+<div class="stage">
+  <div class="nav"><div class="wm" data-wordmark></div><div class="links"><span>Work</span><span>Services</span><span>How we work</span><span>About</span></div><a class="pill outline" style="height:42px;padding:0 20px;font-size:13px">Let's talk</a></div>
+  <div class="cover">
+    <div class="issue"><span class="label" style="color:var(--text)">The epox magazine · No. 07</span><span class="label">November 2026</span></div>
+    <div class="mast">FOUND.</div>
+    <div class="lines">
+      <div>
+        <p class="hed">We find the problem <span class="k">before</span> you&nbsp;do.</p>
+        <div class="barcode"><svg viewBox="0 0 120 34" id="bars"></svg><span>epox.systems<br>Free · Let's talk</span></div>
+      </div>
+      <ul>
+        <li>The rental app that ended deposit fights <b>12</b></li>
+        <li>Inside our one-working-day reply <b>20</b></li>
+        <li class="x">Seven ways we build, one team <b>04</b></li>
+        <li class="x">Fixed, dedicated or monthly: pick <b>24</b></li>
+      </ul>
+      <div class="phone-cta"><a class="pill foil" style="height:48px">Let's talk →</a><a class="pill outline" style="height:48px">Read the issue</a></div>
+    </div>
+  </div>
+  <div class="toc">
+    <p class="label">In this issue</p>
+    <ol>
+      <li><span class="pg">04</span><span><span class="t">Services</span><span class="d">Seven ways we build: web, mobile, AI, design, cloud, launch.</span></span></li>
+      <li><span class="pg">12</span><span><span class="t">Work</span><span class="d">Apps we built and still run, problem first.</span></span></li>
+      <li><span class="pg">20</span><span><span class="t">How we work</span><span class="d">Fixed project, dedicated developers or a monthly retainer.</span></span></li>
+      <li><span class="pg">28</span><span><span class="t">About</span><span class="d">A software house from Faisalabad, building since 2019.</span></span></li>
+    </ol>
+    <div class="ctas"><a class="pill foil">Let's talk →</a><a class="pill outline">Read the issue</a></div>
+  </div>
+</div>
+<script src="lab.js"></script>
+<script>
+// a barcode (decorative; widths from the domain name, so it is ours)
+const w = [...'epox.systems'].flatMap(c => [1 + (c.charCodeAt(0) % 3), 1 + (c.charCodeAt(0) >> 2) % 2]);
+let x = 0; document.getElementById('bars').innerHTML = w.map((b, i) => { const r = i % 2 ? '' : `<rect x="${x}" y="0" width="${b}" height="34" fill="#F2F5F9"/>`; x += b + 1.2; return r; }).join('');
+</script>
+</body></html>
